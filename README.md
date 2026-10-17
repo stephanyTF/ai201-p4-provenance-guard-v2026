@@ -38,10 +38,13 @@
 
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
-1. A text is submitted by a human
-2. detector.py loads the text to save it as it gets processed
-3. perplexity
-4. model_signal
+1. A text enters by client request where its text and creator_id is extracted from sommething like `curl -X POST /submit with a JSON body of {"text": "...", "creator_id": "..."}.`
+2. The first signal is in detector.py which tokenizes it, truncated to the max tokens, and rejects text that is too short.
+3. model_signal computes GPT-2 perplexity and makes it fit on a 0–1 score, where high means AI.
+4. Stylometry is the 2nd signal, measuring sentence-length spread, type-token ratio, and punctuation density.
+5. style_signal normalizes, flips, and combines those into a 0–1 score, where high means AI.
+6. combine_signals merges the two signals into one score.
+7. The score is mapped to the label the reader sees
 
 
 ---
