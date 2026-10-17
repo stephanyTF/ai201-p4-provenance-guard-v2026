@@ -38,7 +38,10 @@
 
 <!-- The path a submission takes, from arriving to the label a reader sees.
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
-
+1. A text is submitted by a human
+2. detector.py loads the text to save it as it gets processed
+3. perplexity
+4. model_signal
 
 
 ---
