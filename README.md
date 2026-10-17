@@ -40,10 +40,10 @@
      Six or seven steps — this is the trace you wrote in Milestone 1. -->
 1. A text enters by client request where its text and creator_id is extracted from sommething like `curl -X POST /submit with a JSON body of {"text": "...", "creator_id": "..."}.`
 2. The first signal is in detector.py which tokenizes it, truncated to the max tokens, and rejects text that is too short.
-3. model_signal computes GPT-2 perplexity and makes it fit on a 0–1 score, where high means AI.
+3. Model_signal computes GPT-2 perplexity and makes it fit on a 0–1 score, where high means AI.
 4. Stylometry is the 2nd signal, measuring sentence-length spread, type-token ratio, and punctuation density.
-5. style_signal normalizes, flips, and combines those into a 0–1 score, where high means AI.
-6. combine_signals merges the two signals into one score.
+5. Style_signal normalizes, flips, and combines those into a 0–1 score, where high means AI.
+6. Combine_signals merges the two signals into one score.
 7. The score is mapped to the label the reader sees
 
 
@@ -59,11 +59,13 @@
 
 ### Signal one — the model signal
 
-**What it measures:**
+**What it measures:** It measures the predictability of the text
 
-**Why that might differ between human and AI writing:**
+**Why that might differ between human and AI writing:** 
+     For humans, their writing tend to be less predictable (like odd or informal word choices), thus having less perple 
+     For AI
 
-**What it can't see:**
+**What it can't see:** 
 
 ### Signal two — the style signal
 
