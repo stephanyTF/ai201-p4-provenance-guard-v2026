@@ -114,14 +114,15 @@
 
 | Label | Score range | The exact text a reader sees |
 |---|---|---|
-| high-confidence human |  |  |
-| unsure |  |  |
-| high-confidence AI |  |  |
+| high-confidence human | score < 0.4 | Based on the signals, there's a strong chance that the text is human written |
+| unsure | .4 <= score <= .6  | Signals disagree or are weak so there's either not enough information or clear judgement to determine if it's fully human written  |
+| high-confidence AI | score <= .6  | Based on the signals, there's a possibility that the text contains AI generated content. |
 
 **Why I worded the "unsure" one this way:**
 <!-- It's the hardest of the three. It has to admit uncertainty without
      sounding like an accusation, because the person reading it may well have
      written every word themselves. -->
+     I explicity give a quick reason why there's no clear answer and avoid using the phrase "AI generated" to avoid the reader jumping at the sight of AI and instead try to replace with a calmer alternative "human written". I avoid accusations to the reader and just admit a limit on either the system or on the text given. 
 
 
 
