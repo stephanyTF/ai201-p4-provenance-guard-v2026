@@ -59,13 +59,18 @@
 
 ### Signal one — the model signal
 
-**What it measures:** It measures the predictability of the text
+**What it measures:** It measures the predictability of the text 
 
 **Why that might differ between human and AI writing:** 
-     For humans, their writing tend to be less predictable (like odd or informal word choices), thus having less perple 
-     For AI
+     For humans, their writing tend to be less predictable (like odd or informal word choices). 
+     For AI, its writing can be repetitive thus more predictable than humans as it tends to iterate the same words.
 
 **What it can't see:** 
+     The signal has 3 blindspots:
+          1. Someone writing in a second language as they may stick to using words they're familiar with or write more formally depending on their background or culture or polite caution when writing in a new language
+          2. A younger writer. They may repeat or use basic vocabulary as they're still learning
+          3. Anyone writing plainly on purpose for a research paper or other strictly formal event. 
+
 
 ### Signal two — the style signal
 
