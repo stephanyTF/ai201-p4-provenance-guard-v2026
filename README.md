@@ -59,7 +59,7 @@
 
 ### Signal one — the model signal
 
-**What it measures:** It measures the predictability of the text 
+**What it measures:** Measures how well each word fits its context, using GPT-2's trained language based on predictability of text
 
 **Why that might differ between human and AI writing:** 
      For humans, their writing tend to be less predictable (like odd or informal word choices). 
@@ -74,11 +74,16 @@
 
 ### Signal two — the style signal
 
-**What it measures:**
+**What it measures:**  Stylometry analyze the text's shape (without context unlike detector) soley based on stats like sentence-length spread, type-token ratio, and punctuation density
 
 **Why that might differ between human and AI writing:**
+     Human's sentences have a wider range in their length w/n a text
+     AI writing tend to have even, mid-length sentences and a narrower band of vocabulary.
+
 
 **What it can't see:**
+     Since it's mainly based on stats, it can't see context of the text altogether.
+
 
 ### The combining rule
 

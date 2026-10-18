@@ -42,19 +42,27 @@ Two things worth knowing before you pick numbers:
   a **miss**.
 
 ---
-## 1.
+## 1. At most 2 false positives in 10 
 
 <!-- Your criterion. It must name a number. -->
 
+**Why this target:** The number of allowed false positives is low because on a writing site a wrong accusation costs more than a missed detection, however appeals should allow for those false positives be cleared as the system shouldn't be too lenient as well. 
 
+
+---
+
+## 2. A clearly-AI and clearly-human text score should score difference should be at least .5
+
+<!-- Your criterion. -->
 
 **Why this target:**
+  .5 is a significanlty large enough distance to differentiate the scores.
 
 
 
 ---
 
-## 2.
+## 3. 
 
 <!-- Your criterion. -->
 
@@ -66,26 +74,13 @@ Two things worth knowing before you pick numbers:
 
 ---
 
-## 3.
+## 4. At least 7 in 10 appeals should lead to a status change and be recorded
 
 <!-- Your criterion. -->
 
 
-
 **Why this target:**
-
-
-
----
-
-## 4.
-
-<!-- Your criterion. -->
-
-
-
-**Why this target:**
-
+This helps ensure that any false positives would have a chance of being correctly identified however we want to ensure that this is not always true to ensure we're not easily allowing correctly AI identified text to pass through as human.
 
 
 ---
