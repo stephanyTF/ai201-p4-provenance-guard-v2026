@@ -64,8 +64,18 @@ def sentence_length_spread(text: str) -> float:
     `stdev` raises on fewer than two values. Decide what that should return
     before the attack set decides for you.
     """
-    # TODO: replace this
-    return 0.0
+    # Scale: 0-1. Higher = more varied sentence lengths = more human-like, so
+    # style_signal must flip this one. Coefficient of variation (stdev / mean)
+    # of words per sentence, capped at CV_CAP. 
+    # The cap is a guess : a CV of 1.0 means the spread is as big as the average
+    # sentence, which is already very lumpy.
+    CV_CAP = 1.0
+    lengths = [len(words(s)) for s in sentences(text)]
+    lengths = [n for n in lengths if n > 0]
+    if len(lengths) < 2:
+        return 0.5  # one sentence is no evidence either way: stay neutral
+    cv = statistics.stdev(lengths) / statistics.mean(lengths)
+    return min(cv / CV_CAP, 1.0)
 
 
 def type_token_ratio(text: str) -> float:
