@@ -140,14 +140,21 @@
      two off the response, so leaving them out costs you next unit's
      diagnostics. -->
 
-```bash
-$ curl -X POST http://127.0.0.1:5000/submit \
-  -H "Content-Type: application/json" \
-  -d '{"text": "...", "creator_id": "..."}'
+```terminal
+
+curl.exe -X POST http://127.0.0.1:5000/submit -H "Content-Type: application/json" -d '{\"text\": \"Hello world, this is a test.\", \"creator_id\": \"u1\"}'
 ```
 
+**JSON OUTPUT**
 ```json
-
+{
+  "confidence": 0.0,
+  "content_id": "39321669-61a5-4bc2-97b4-a697e6e47dc5",
+  "guess": null,
+  "label": "placeholder",
+  "model_score": 0.5298,
+  "style_score": null
+}
 ```
 
 **An appeal**
