@@ -201,15 +201,45 @@ def submit():
     """
     payload = request.get_json(silent=True) or {}
 
-    # TODO: delete this and build the route.
+    import detector
+
+    # Step 2: pull the fields out, rejecting malformed input instead of crashing.
+    text = payload.get("text")
+    creator_id = payload.get("creator_id")
+    if not isinstance(text, str) or not text.strip(): #check if text is a non-empty string
+        return jsonify({"error": "invalid_text",
+                        "message": "`text` must be a non-empty string."}), 400
+    if not isinstance(creator_id, str) or not creator_id.strip(): #check if creator_id is a non-empty string
+        return jsonify({"error": "invalid_creator_id",
+                        "message": "`creator_id` must be a non-empty string."}), 400
+
+    # Step 3: one real signal. Everything else is a placeholder until M4/M5.
+    model_score = detector.model_signal(text)
+    guess = None          # TODO M4/M5
+    confidence = 0.0      # TODO M4
+    label = "placeholder"  # TODO M5
+    style_score = None    # TODO M4
+
+    # Step 4: log every submission. /appeal looks decisions up by content_id.
+    content_id = str(uuid.uuid4())
+    audit.log_decision(
+        content_id=content_id,
+        creator_id=creator_id,
+        guess=guess,
+        model_score=model_score,
+        style_score=style_score,
+        combined_score=None,
+        label=label,
+    )
+
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /submit isn't built yet — see the TODO in app.py.",
-        "you_sent": {
-            "text_length": len(payload.get("text", "")),
-            "creator_id": payload.get("creator_id"),
-        },
-    }), 501
+        "content_id": content_id,
+        "guess": guess,
+        "confidence": confidence,
+        "label": label,
+        "model_score": model_score,
+        "style_score": style_score,
+    })
 
 
 @app.post("/appeal")
