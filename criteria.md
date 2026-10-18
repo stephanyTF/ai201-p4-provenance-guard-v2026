@@ -56,19 +56,18 @@ Two things worth knowing before you pick numbers:
 <!-- Your criterion. -->
 
 **Why this target:**
-  .5 is a significanlty large enough distance to differentiate the scores.
+  .2 is a significanlty large enough distance to differentiate the scores.
 
 
 
 ---
 
-## 3. 
+## 3. Across a test set of 9 pieces (3 clearly human, 3 clearly AI, 3 borderline), each of the three labels (human, ai, unsure) is returned at least once, in each of the 3 trials.
 
 <!-- Your criterion. -->
 
 
-
-**Why this target:**
+**Why this target:** 3 is the minimum number for ensuring that each label is correctly identified and the same number of trials help make it fair. Unsure has to be reachable because its gap helps differentiate clearly between AI and human writing.
 
 
 
@@ -85,13 +84,11 @@ This helps ensure that any false positives would have a chance of being correctl
 
 ---
 
-## 5.
+## 5. Missing and/or empty test should always avoid scoring and request the user again to submit a non empty text while an enormous text should also be avoided to score and instead notify the user to shorten their content
 
 <!-- Your criterion. -->
 
-
-
-**Why this target:**
+**Why this target:** This ensures that the flow of the model's service is not interuppted but encourages continued action on the user part by asking them to alter their input in a different way
 
 
 
