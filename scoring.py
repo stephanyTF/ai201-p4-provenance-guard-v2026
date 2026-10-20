@@ -52,11 +52,25 @@ def combine_signals(model_score: float, style_score: float) -> float:
     The weights in config.py are placeholders. Change them, or ignore them and
     write a different rule.
     """
-    # TODO: replace this
-    return (
-        config.WEIGHT_MODEL_SIGNAL * model_score
-        + config.WEIGHT_STYLE_SIGNAL * style_score
-    )
+    #handle when signals disagree by averaging but leaning towards predicting human written.
+    diff_model_score = abs(model_score - style_score)
+
+    # If the signals disagree significantly, lean towards the human-written prediction
+    if diff_model_score > 0.5:
+        combined_score = (model_score*config.WEIGHT_MODEL_SIGNAL + style_score*config.WEIGHT_STYLE_SIGNAL) / 2
+        #Leans towards human-written prediction by subtracting 0.1 from the combined score
+        combined_score = max(0.0, combined_score - 0.1)
+
+    # Otherwise, just average the two scores
+    else:
+        combined_score = (model_score*config.WEIGHT_MODEL_SIGNAL + style_score*config.WEIGHT_STYLE_SIGNAL) / 2
+
+    return combined_score
+
+    # return (
+    #     config.WEIGHT_MODEL_SIGNAL * model_score
+    #     + config.WEIGHT_STYLE_SIGNAL * style_score
+    # )
 
 
 def score_to_label(score: float) -> tuple[str, str]:

@@ -89,10 +89,19 @@
 
 <!-- Write the rule in words, then give the numbers. What happens when the two
      signals disagree? -->
+    
 
 **The rule:**
+ When the difference between the two signals is greater than .5, I would take the average of the sum of the weighted model scores and subtract .1 from it to make it lean twoard human written.
 
 **The numbers:**
+#Kept
+WEIGHT_MODEL_SIGNAL = 0.5
+WEIGHT_STYLE_SIGNAL = 0.5
+
+#for ensuring the score leans toward human written:
+combined_score = max(0.0, combined_score - 0.1)
+
 
 **Where it lives:** `scoring.py::combine_signals`
 
