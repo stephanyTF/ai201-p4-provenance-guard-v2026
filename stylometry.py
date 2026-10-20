@@ -90,7 +90,6 @@ def type_token_ratio(text: str) -> float:
     directly comparable on it, and if your test inputs vary a lot in length,
     that alone can look like a signal.
     """
-    # TODO: replace this
     words_list = words(text)
     
     #1. find the unique words in the text
@@ -117,8 +116,23 @@ def punctuation_density(text: str) -> float:
         more interesting than full stops, because they vary more between
         writers.
     """
-    # TODO: replace this
-    return 0.0
+    total_characters = len(text)
+
+
+    if total_characters == 0:
+        return 0.0
+
+    #1. Make a punctuation list
+    punctuation_lst = ",;:—–()-’ “ ”"
+
+    #2. Count the number of punctuation marks in the text
+    punctuation_count = sum(1 for char in text if char in punctuation_lst)
+    
+    #3. Divide the number of punctuation marks by the total number of characters to get the punctuation density
+    punctuation_density = punctuation_count / total_characters
+
+    #5. Return the punctuation density as a float
+    return round(punctuation_density, 5)
 
 
 # ── Combining them ───────────────────────────────────────────────────────────
@@ -162,4 +176,4 @@ if __name__ == "__main__":
     print(f"type_token_ratio         {type_token_ratio(text)}")
     print(f"punctuation_density      {punctuation_density(text)}")
     print(f"style_signal             {style_signal(text)}   (higher = more likely AI)")
-    print("\nAll zeros? These are stubs — Milestone 4 is where you build them.")
+    #print("\nAll zeros? These are stubs — Milestone 4 is where you build them.")
