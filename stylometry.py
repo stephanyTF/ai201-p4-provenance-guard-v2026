@@ -75,7 +75,7 @@ def sentence_length_spread(text: str) -> float:
     if len(lengths) < 2:
         return 0.5  # one sentence is no evidence either way: stay neutral
     cv = statistics.stdev(lengths) / statistics.mean(lengths)
-    return min(cv / CV_CAP, 1.0)
+    return round(min(cv / CV_CAP, 1.0), 3)
 
 
 def type_token_ratio(text: str) -> float:
@@ -91,7 +91,20 @@ def type_token_ratio(text: str) -> float:
     that alone can look like a signal.
     """
     # TODO: replace this
-    return 0.0
+    words_list = words(text)
+    
+    #1. find the unique words in the text
+    unique_words = set(words_list)
+
+    #2. find the total number of words in the text
+    total_words = len(words_list)
+
+    #3. divide the number of unique words by the total number of words to get the type-token ratio
+    if total_words == 0:
+        return 0.0
+    return round(len(unique_words) / total_words, 3)
+
+  
 
 
 def punctuation_density(text: str) -> float:
