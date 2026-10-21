@@ -92,7 +92,8 @@
     
 
 **The rule:**
- When the difference between the two signals is greater than .5, I would take the average of the sum of the weighted model scores and subtract .1 from it to make it lean twoard human written.
+ When the difference between the two signals is greater than or equal to .2, I would take the average of the sum of the weighted model scores and subtract .1 from it to make it lean toward human written.
+
 
 **The numbers:**
 #Kept
@@ -109,6 +110,15 @@ combined_score = max(0.0, combined_score - 0.1)
      somewhere else, say where. -->
 
 **A case where my two signals split, and what my rule does with it:**
+
+Example Text:
+> “I learned that cats kneaded blankets from my younger brother who seems to know little fun facts about all types of animals. He told me that cats sometimes knead blankets or softly pound their paws in a “kneading” motion like they’re kneading dough as an old behavior that newborn kittens may do when they’re feeding from their mother’s milk and may knead the area to get more milk out. Ever since I learned about it, I kept seeing posts of cats kneading in my feed (my social media feed may have been eavesdropping on me). Its so cute to watch cats knead their pillows, stuffed toys, and even their owners. I learned it's a sign of affection but it’s also very cute to watch!”
+
+Model Signal: .5
+Style Signal: .3
+
+
+
 
 
 

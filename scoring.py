@@ -56,7 +56,7 @@ def combine_signals(model_score: float, style_score: float) -> float:
     diff_model_score = abs(model_score - style_score)
 
     # If the signals disagree significantly, lean towards the human-written prediction
-    if diff_model_score > 0.5:
+    if diff_model_score >= 0.2:
         combined_score = (model_score*config.WEIGHT_MODEL_SIGNAL + style_score*config.WEIGHT_STYLE_SIGNAL) / 2
         #Leans towards human-written prediction by subtracting 0.1 from the combined score
         combined_score = max(0.0, combined_score - 0.1)
