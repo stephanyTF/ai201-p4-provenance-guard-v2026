@@ -161,31 +161,34 @@ Style Signal: .3
 
 ```terminal
 
-curl.exe -X POST http://127.0.0.1:5000/submit -H "Content-Type: application/json" -d '{\"text\": \"Hello world, this is a test.\", \"creator_id\": \"u1\"}'
+ curl.exe -X POST http://127.0.0.1:5000/submit -H "Content-Type: application/json" -d '{\"creator_id\":\"u1\", \"content_id\":\"4db5c97c-c88d-400d-a3c5-b87c343b23b9\", \"reasoning\": \"I try to study with the Pomodoro strategy but sometimes it does not help with my focus. I get distracted so easily. idk why.\"}'
 ```
 
 **JSON OUTPUT**
 ```json
 {
-  "confidence": 0.0,
-  "content_id": "39321669-61a5-4bc2-97b4-a697e6e47dc5",
-  "guess": null,
-  "label": "placeholder",
-  "model_score": 0.5298,
-  "style_score": null
+  "combined_score": 0.039,
+  "confidence": 0.4655,
+  "content_id": "4db5c97c-c88d-400d-a3c5-b87c343b23b9",
+  "guess": "ai",
+  "label": "Most likely written by an AI.",
+  "model_score": 0.4655,
+  "style_score": 0.092
 }
 ```
 
 **An appeal**
 
 ```bash
-$ curl -X POST http://127.0.0.1:5000/appeal \
-  -H "Content-Type: application/json" \
-  -d '{"content_id": "...", "reasoning": "..."}'
+ curl.exe -X POST http://127.0.0.1:5000/appeal -H "Content-Type: application/json" -d '{\"creator_id\":\"u1\", \"content_id\":\"4db5c97c-c88d-400d-a3c5-b87c343b23b9\", \"reasoning\": \"I wrote this informally by myself."}'
 ```
 
 ```json
-
+{
+  "content_id": "4db5c97c-c88d-400d-a3c5-b87c343b23b9",
+  "message": "Your appeal has been recorded and is under review.",
+  "ok": true
+}
 ```
 
 **What the log shows afterwards**
@@ -195,7 +198,41 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 ```
 
 ```json
-
+{
+  "count": 3,
+  "entries": [
+    {
+      "combined_score": 0.039,
+      "content_id": "4db5c97c-c88d-400d-a3c5-b87c343b23b9",
+      "creator_id": "u1",
+      "guess": "ai",
+      "label": "Most likely written by an AI.",
+      "model_score": 0.4655,
+      "status": "decided",
+      "style_score": 0.092,
+      "timestamp": "2026-10-21T17:11:53+00:00"
+    },
+    {
+      "combined_score": 0.039,
+      "content_id": "d7a61224-fb70-42f0-96ce-87956dea6257",
+      "creator_id": "u1",
+      "guess": "ai",
+      "label": "Most likely written by an AI.",
+      "model_score": 0.4655,
+      "status": "decided",
+      "style_score": 0.092,
+      "timestamp": "2026-10-21T17:12:04+00:00"
+    },
+    {
+      "content_id": "4db5c97c-c88d-400d-a3c5-b87c343b23b9",
+      "creator_id": "u1",
+      "event": "appeal",
+      "reasoning": "I wrote this informally by myself.",
+      "status": "under_review",
+      "timestamp": "2026-10-21T17:47:01+00:00"
+    }
+  ]
+}
 ```
 
 ---
@@ -218,11 +255,11 @@ Samples 3 and 4 are the hard cases. Formal human writing tends to look "AI-like"
 If you want a backup topic, try "why people put pineapple on pizza" or "the best way to organize a bookshelf."
 - *What I changed:* I took its advice and wrote my own human answer to the "Cat Kneading Question" while also shortenting the essay rec to a formal introduction paragraph with a thesis to cut short on text. 
 
-**Moment 2**
+**Moment 2** Debugging
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:*  The code [app.py::submit] i highlighted that you mentioned had a bug, did i fix it?
+- *What came back:* It mentioned that I partially had fixed it but forgot another check to validate that the passed value was non empty before passing
+- *What I changed:* I added in the non empty check in the code and commented the reasons for it. 
 
 <!-- ═══════════════════════ UNIT 8 — THE TEST ═══════════════════════ -->
 
