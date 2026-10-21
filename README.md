@@ -194,9 +194,19 @@ $ curl "http://127.0.0.1:5000/log?limit=3"
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* Give me a random but light topic that i can make a human, ai generated, formal human writing, and lightly edited ai version to test with
+- *What came back:* Topic: why cats knead blankets. It's light and low-stakes, and nobody needs expertise to write about it. It also gives each version room to sound different.
+
+Here's how I'd use it for the four samples:
+
+Human, casual: Write about your own cat, or one you know. Use a personal anecdote, tangents, a fragment or two, uneven sentence lengths, and some quirky punctuation like dashes and parentheses.
+AI-generated: Prompt: "Write a short essay about why cats knead blankets." Paste the output as-is.
+Formal human: Write an essay-style piece, like a school assignment. Use a clear thesis, topic sentences, and no slang. Keep your own word choices and rhythm.
+Lightly edited AI: Take sample 2 and change only about 10–15%. Swap a few words, tweak an opening line, and add one personal detail.
+Samples 3 and 4 are the hard cases. Formal human writing tends to look "AI-like" (low punctuation variety, even sentences), and lightly edited AI tends to look human. They should show whether your combining rule holds up.
+
+If you want a backup topic, try "why people put pineapple on pizza" or "the best way to organize a bookshelf."
+- *What I changed:* I took its advice and wrote my own human answer to the "Cat Kneading Question" while also shortenting the essay rec to a formal introduction paragraph with a thesis to cut short on text. 
 
 **Moment 2**
 

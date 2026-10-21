@@ -75,7 +75,7 @@ def sentence_length_spread(text: str) -> float:
     if len(lengths) < 2:
         return 0.5  # one sentence is no evidence either way: stay neutral
     cv = statistics.stdev(lengths) / statistics.mean(lengths)
-    return round(min(cv / CV_CAP, 1.0), 3)
+    return min(cv / CV_CAP, 1.0)
 
 
 def type_token_ratio(text: str) -> float:
@@ -101,7 +101,7 @@ def type_token_ratio(text: str) -> float:
     #3. divide the number of unique words by the total number of words to get the type-token ratio
     if total_words == 0:
         return 0.0
-    return round(len(unique_words) / total_words, 3)
+    return len(unique_words) / total_words
 
   
 
@@ -132,7 +132,7 @@ def punctuation_density(text: str) -> float:
     punctuation_density = punctuation_count / total_characters
 
     #5. Return the punctuation density as a float
-    return round(punctuation_density, 5)
+    return punctuation_density
 
 
 # ── Combining them ───────────────────────────────────────────────────────────
@@ -159,8 +159,27 @@ def style_signal(text: str) -> float:
     you trust it. Plain and ordinary, not formal: formal prose reads as *human*
     to signal one, and it is plain writing that gets accused.
     """
-    # TODO: replace this
-    return 0.5
+
+    #1. Get the three measures
+    spread = sentence_length_spread(text)
+    ttr = type_token_ratio(text)
+    pd = punctuation_density(text)
+
+    #2. Flip the measures that point the wrong way
+    # Higher spread = more human-like, so flip it
+    spread_flipped = 1 - spread
+    # Higher ttr = more human-like, so flip it
+    ttr_flipped = 1 - ttr
+
+    #3. Scale the measures to a comparable range (0-1)
+    # Spread is already between 0 and 1, so no scaling needed
+    # TTR is already between 0 and 1, so no scaling needed
+    # Punctuation density is already between 0 and 1, so no scaling needed
+
+    #4. Combine the measures into a single score
+    combined_score = (spread_flipped + ttr_flipped + pd) / 3
+
+    return round(combined_score,3)
 
 
 if __name__ == "__main__":

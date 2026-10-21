@@ -148,12 +148,7 @@ if __name__ == "__main__":
         text = " ".join(sys.argv[1:])
     else:
         text = (
-            "The implementation of the proposed framework requires careful "
-            "consideration of several key factors. First, it is important to "
-            "note that the system must be able to handle a wide variety of "
-            "different inputs. Additionally, the overall performance of the "
-            "solution depends on a number of important variables."
-        )
+"Have you seen on your social media feed or heard a few cat owners exclaim, “Aww my cats are making biscuits!”. Making biscuits or kneading are one of the few feline habits that can be seen as not just endearing but even puzzling. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior might seem quirky, it’s deeply rooted in a cat's biology and early life.  Kneading likely stems from several motives: nostalgia, instinct, territory, and comfort. "        )
         print("(no text given — scoring a sample)\n")
 
     print(f"Loading {config.DETECTOR_MODEL} (first run downloads ~550 MB)…")
