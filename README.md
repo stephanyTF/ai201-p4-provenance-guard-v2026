@@ -133,9 +133,9 @@ Style Signal: .3
 
 | Label | Score range | The exact text a reader sees |
 |---|---|---|
-| high-confidence human | score < 0.4 | Based on the signals, there's a strong chance that the text is human written |
-| unsure | .4 <= score <= .6  | Signals disagree or are weak so there's either not enough information or clear judgement to determine if it's fully human written  |
-| high-confidence AI | score <= .6  | Based on the signals, there's a possibility that the text contains AI generated content. |
+| high-confidence human | score < 0.3 | Most likely written without the use of an AI.|
+| unsure | .3 <= score <= .4  | Difficult to tell whether this was human written. It could be either.|
+| high-confidence AI | score >= .4  | Most likely written by an AI. |
 
 **Why I worded the "unsure" one this way:**
 <!-- It's the hardest of the three. It has to admit uncertainty without
