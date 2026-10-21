@@ -30,6 +30,8 @@ from flask import Flask, jsonify, request
 
 import audit
 import config
+import scoring
+import stylometry
 
 app = Flask(__name__)
 
@@ -215,10 +217,10 @@ def submit():
 
     # Step 3: one real signal. Everything else is a placeholder until M4/M5.
     model_score = detector.model_signal(text)
-    guess = None          # TODO M4/M5
-    confidence = 0.0      # TODO M4
-    label = "placeholder"  # TODO M5
-    style_score = None    # TODO M4
+    guess = scoring.score_to_label(model_score)[0]  #  M4/M5
+    confidence = model_score  #  M4
+    label = scoring.score_to_label(model_score)[1]  #  M5
+    style_score = stylometry.style_signal(text)  #  M4
 
     # Step 4: log every submission. /appeal looks decisions up by content_id.
     content_id = str(uuid.uuid4())
@@ -228,7 +230,7 @@ def submit():
         guess=guess,
         model_score=model_score,
         style_score=style_score,
-        combined_score=None,
+        combined_score=scoring.combine_signals(model_score, style_score),
         label=label,
     )
 
@@ -239,6 +241,7 @@ def submit():
         "label": label,
         "model_score": model_score,
         "style_score": style_score,
+        "combined_score": scoring.combine_signals(model_score, style_score),
     })
 
 
@@ -264,12 +267,42 @@ def appeal():
     """
     payload = request.get_json(silent=True) or {}
 
-    # TODO: delete this and build the route.
+    #1. Check the content_id actually exists — `audit.entries_for(id)`
+    content_id = payload.get("content_id")
+
+    #Checks if content_id is a non-empty string
+    if not isinstance(content_id, str) or not content_id.strip():
+        return jsonify({"error": "invalid_content_id",
+                        "message": "`content_id` must be a non-empty string."}), 400
+    
+    #Checks if content_id exists in the audit log
+    if not audit.entries_for(content_id):
+        return jsonify({"error": "unknown_content_id",
+                    "message": "No decision found for that `content_id`."}), 404
+
+    #2 Record the appeal with `audit.log_appeal(...)`, which moves the item to `under_review`.
+    creator_id = payload.get("creator_id")
+    if not isinstance(creator_id, str) or not creator_id.strip():
+        return jsonify({"error": "invalid_creator_id",
+                        "message": "`creator_id` must be a non-empty string."}), 400
+    reasoning = payload.get("reasoning")
+    if not isinstance(reasoning, str) or not reasoning.strip():
+        return jsonify({"error": "invalid_reasoning",
+                        "message": "`reasoning` must be a non-empty string."}), 400
+    audit.log_appeal(creator_id=creator_id, content_id=content_id, reasoning=reasoning)
+
+    #3. Confirm to the writer. No automatic re-checking needed.
     return jsonify({
-        "error": "not_implemented",
-        "message": "POST /appeal isn't built yet — see the TODO in app.py.",
-        "you_sent": payload,
-    }), 501
+        "ok": True,
+        "message": "Your appeal has been recorded and is under review.",
+        "content_id": content_id,
+    })
+    
+    # return jsonify({
+    #     "error": "not_implemented",
+    #     "message": "POST /appeal isn't built yet — see the TODO in app.py.",
+    #     "you_sent": payload,
+    # }), 501
 
 
 # ── Already works ─────────────────────────────────────────────────────────────

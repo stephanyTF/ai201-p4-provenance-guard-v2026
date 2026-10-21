@@ -65,7 +65,7 @@ def combine_signals(model_score: float, style_score: float) -> float:
     else:
         combined_score = (model_score*config.WEIGHT_MODEL_SIGNAL + style_score*config.WEIGHT_STYLE_SIGNAL) / 2
 
-    return combined_score
+    return round(combined_score, 3)
 
     # return (
     #     config.WEIGHT_MODEL_SIGNAL * model_score
@@ -99,7 +99,7 @@ def score_to_label(score: float) -> tuple[str, str]:
     think if they got it on their own work. That question is the whole
     milestone.
     """
-    if score >= config.AI_THRESHOL:
+    if score >= config.AI_THRESHOLD:
         return "ai", "Most likely written by an AI."
     if score <= config.HUMAN_THRESHOLD:
         return "human", "Most likely written without the use of an AI."
