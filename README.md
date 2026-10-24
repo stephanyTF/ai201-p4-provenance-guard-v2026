@@ -267,13 +267,16 @@ If you want a backup topic, try "why people put pineapple on pizza" or "the best
 
 ## Rate Limiting
 
-**My limits:** ___ per minute, ___ per day
+**My limits:** 7 per minute, 100 per day
 
 **Why those numbers and not others:**
 <!-- Think about two people: a real writer submitting their own work a few
      times an hour, and a script sending a thousand variations to map your
      thresholds. Your numbers have to be liveable for the first and hostile to
      the second. -->
+     A real writer may spend some time revisioning or wanting to check if a text is human written. They may take some time to read and understand the outcome hence, I think at most 7 posts per minute should be generously realisitic. I lowered it from 10 because it seemed like too many posts to run per minute. 
+
+     Same for the rates per day. 
 
 **What a caller counts as:** <!-- per address, or per creator_id? They fail
 differently — one script can look like a thousand callers, and one household
@@ -284,7 +287,7 @@ can look like one. -->
 <!-- python run_attacks.py --flood 15 -->
 
 ```
-
+200 200 200 200 200 200 200 429 429 429 429 429 429 429 429
 ```
 
 ---
