@@ -267,20 +267,22 @@ If you want a backup topic, try "why people put pineapple on pizza" or "the best
 
 ## Rate Limiting
 
-**My limits:** 7 per minute, 100 per day
+**My limits:** 7 per minute, 200 per day
 
 **Why those numbers and not others:**
 <!-- Think about two people: a real writer submitting their own work a few
      times an hour, and a script sending a thousand variations to map your
      thresholds. Your numbers have to be liveable for the first and hostile to
      the second. -->
-     A real writer may spend some time revisioning or wanting to check if a text is human written. They may take some time to read and understand the outcome hence, I think at most 7 posts per minute should be generously realisitic. I lowered it from 10 because it seemed like too many posts to run per minute. 
+     A real writer may spend some time revisioning or check if a text is human written. They may take some time to read and understand the outcome hence, I think at most 7 posts per minute should be generously realisitic. I lowered it from 10 because it seemed like too many posts to run per minute. 
 
-     Same for the rates per day. 
+     I left the rate at 200 however since it seems like a reasonable amount without allowing massive flooding of potentially malicious texts to occur. 
+
 
 **What a caller counts as:** <!-- per address, or per creator_id? They fail
 differently — one script can look like a thousand callers, and one household
 can look like one. -->
+Caller is counted as creator_id. However, counting per creator_id makes the system vulnerable to scripts that tries to look like many callers but actually is just rotating IDs and never hits the limit. The attack set shows that each row submits as a different attacker_<id>. On the otherhand, a shared household is the opposite, since each person has their own ID and gets their own allowance.
 
 **The run of status codes when I pushed past it:**
 

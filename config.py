@@ -95,7 +95,7 @@ AI_THRESHOLD = .4 # originally 0.65
 RATE_LIMITING_ENABLED = True #os.getenv("AI201_RATE_LIMITS", "1") == "1" 
 
 RATE_LIMIT_PER_MINUTE = 7 #10 lowered rate limit to avoid spam
-RATE_LIMIT_PER_DAY = 100 #200 decreased it to half 
+RATE_LIMIT_PER_DAY = 200 
 
 # Flask-Limiter warns loudly without this. In-memory is right for one laptop
 # and wrong for anything real — a restart forgets every count, and two copies
