@@ -356,16 +356,28 @@ whose work got caught by it:
 
  Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1. my own writing | 2/9 | MET  | MET  | MET  | PASSED |
-| 2. Distinguishable |  |   |   |   |  |
-| 3. label coverage |  |   |   |   |  |
+| 1. my own writing | 2/9 | MET  | MET  | MET  | PASS |
+| 2. Distinguishable | .5 | MISS  | MISS  | MISS  | FAIL  |
+| 3. label coverage |  2/3  | 2/3  | 2/3  | 2/3  | PASS |
 | 4. Appeal Test |  |   |   |   |  |
-| 5. Handling Invalid Text |  |   |   |   |  |
+| 5. Handling Invalid Text | 5/5 | 0/5  | 0/5  | 0/5  | FAIL |
 
 **Real output from one trial**, pasted as text, naming the file and function
 that produced it:
 
+run_eval.py::main()
+
 ```json
+ {
+    "status": 200,
+    "guess": "human",
+    "combined_score": 0.17,
+    "confidence": 0.2815,
+    "model_score": 0.2815,
+    "style_score": 0.4,
+    "label": "Most likely written without the use of an AI.",
+    "sent": "It makes my heart melt to watch cats \u201cmaking biscuits\u201d on my social me"
+  }
 
 ```
 
