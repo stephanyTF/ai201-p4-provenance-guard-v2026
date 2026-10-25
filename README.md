@@ -307,10 +307,44 @@ Caller is counted as creator_id. However, counting per creator_id makes the syst
 
 ```json
 
+#1. Why ai was considred human?
+{"timestamp": "2026-10-25T03:12:08+00:00", "content_id": "5e0d41b9-5632-42a8-837b-224ac77860e3", "creator_id": "attacker_EV01", "guess": "human", "model_score": 0.1635, "style_score": 0.367, "combined_score": 0.033, "label": "Most likely written without the use of an AI.", "status": "decided"}
+
+#2. Why "unsure" when it should be "AI" 
+{"timestamp": "2026-10-25T03:12:10+00:00", "content_id": "d17cac93-d8c2-4899-800a-72e57c07f317", "creator_id": "attacker_EV05", "guess": "unsure", "model_score": 0.3212, "style_score": 0.249, "combined_score": 0.143, "label": "Difficult to tell whether this was written by a person or an AI. It could be either.", "status": "decided"}
+
+#4. 
+{"timestamp": "2026-10-25T03:12:12+00:00", "content_id": "bf6a59da-b498-4aff-8db7-67c488f77b32", "creator_id": "attacker_EV08", "guess": "human", "model_score": 0.2452, "style_score": 0.285, "combined_score": 0.133, "label": "Most likely written without the use of an AI.", "status": "decided"}
+
+#5. Human Read as AI
+{"timestamp": "2026-10-25T03:12:13+00:00", "content_id": "9d358641-d159-472d-86a9-5d05a4137cd4", "creator_id": "attacker_FP01", "guess": "ai", "model_score": 0.6175, "style_score": 0.344, "combined_score": 0.14, "label": "Most likely written by an AI.", "status": "decided"}
+
+#6.
+{"timestamp": "2026-10-25T03:12:14+00:00", "content_id": "8304f279-5c96-482b-b3fc-c4b1019a8b16", "creator_id": "attacker_FP02", "guess": "ai", "model_score": 0.7387, "style_score": 0.403, "combined_score": 0.185, "label": "Most likely written by an AI.", "status": "decided"}
+
+#7.
+{"timestamp": "2026-10-25T03:12:14+00:00", "content_id": "4d967342-9842-45b6-8f43-7e87234c1460", "creator_id": "attacker_FP03", "guess": "ai", "model_score": 0.8051, "style_score": 0.382, "combined_score": 0.197, "label": "Most likely written by an AI.", "status": "decided"}
+
+#8.
+{"timestamp": "2026-10-25T03:12:14+00:00", "content_id": "4099c93e-d00d-4937-952a-497fe3d9232e", "creator_id": "attacker_FP04", "guess": "ai", "model_score": 0.8329, "style_score": 0.326, "combined_score": 0.19, "label": "Most likely written by an AI.", "status": "decided"}
+
+#9. If combined score is low, why still score "AI"
+{"timestamp": "2026-10-25T03:12:18+00:00", "content_id": "c33eecfb-bba6-4a4b-a463-d2bb794984d0", "creator_id": "attacker_PI05", "guess": "ai", "model_score": 0.6401, "style_score": 0.239, "combined_score": 0.12, "label": "Most likely written by an AI.", "status": "decided"}
+
+#10. 
+{"timestamp": "2026-10-25T03:12:19+00:00", "content_id": "2562950b-ab71-48fd-8763-a3956f315108", "creator_id": "attacker_MF03", "guess": "human", "model_score": 0.0, "style_score": 0.198, "combined_score": 0.05, "label": "Most likely written without the use of an AI.", "status": "decided"}
+
+
+
+
+
+
 ```
 
 **The single worst outcome** — the one I'd least want to explain to a writer
 whose work got caught by it:
+
+{"timestamp": "2026-10-25T03:12:13+00:00", "content_id": "9d358641-d159-472d-86a9-5d05a4137cd4", "creator_id": "attacker_FP01", "guess": "ai", "model_score": 0.6175, "style_score": 0.344, "combined_score": 0.14, "label": "Most likely written by an AI.", "status": "decided"}
 
 
 
