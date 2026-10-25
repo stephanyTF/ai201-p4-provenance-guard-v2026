@@ -42,7 +42,7 @@ Two things worth knowing before you pick numbers:
   a **miss**.
 
 ---
-## 1. At most 2 false positives in 10 
+## 1. At most 2 false positives in 9 
 
 <!-- Your criterion. It must name a number. -->
 

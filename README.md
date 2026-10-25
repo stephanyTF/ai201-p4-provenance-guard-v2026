@@ -354,13 +354,13 @@ whose work got caught by it:
 
 <!-- Your five criteria across three trials. `run_eval.py --label before`. -->
 
-| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+ Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
 |---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |
+| 1. my own writing | 2/9 | MET  | MET  | MET  | PASSED |
+| 2. Distinguishable |  |   |   |   |  |
+| 3. label coverage |  |   |   |   |  |
+| 4. Appeal Test |  |   |   |   |  |
+| 5. Handling Invalid Text |  |   |   |   |  |
 
 **Real output from one trial**, pasted as text, naming the file and function
 that produced it:

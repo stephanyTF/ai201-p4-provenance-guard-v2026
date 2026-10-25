@@ -122,6 +122,7 @@ def main():
                     results.append({
                         "status": response.status_code,
                         "guess": payload.get("guess"),
+                        "combined_score": payload.get("combined_score"), #suggested add by Claude bc i wanted to see combine_score
                         "confidence": payload.get("confidence"),
                         "model_score": payload.get("model_score"),
                         "style_score": payload.get("style_score"),
