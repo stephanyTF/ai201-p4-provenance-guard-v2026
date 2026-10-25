@@ -63,16 +63,19 @@ SCENARIOS = [
             "Have you seen on your social media feed or heard a few cat owners exclaim, “Aww my cats are making biscuits!”. Making biscuits or kneading are one of the few feline habits that can be seen as not just endearing but even puzzling. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior might seem quirky, it's deeply rooted in a cat's biology and early life.  Kneading likely stems from several motives: nostalgia, instinct, territory, and comfort."
         ],
     },
-      
+    # Criterion 4 (appeals) is tested in run_appeals.py, not here.
+
     {
         "name": "Handling Invalid Text",
         "criterion": 5,
         #  Missing and/or empty text should always avoid scoring and request the user again to submit a non empty text while an enormous text should also be avoided to score and instead notify the user to shorten their content
-        "texts": [
-            "",
-            ".",
-            "borderline.",
-    
+        "bodies": [
+            {"text": "", "creator_id": "eval_bad_empty"},
+            {"creator_id": "eval_bad_missing"},          # no text field at all
+            {"text": None, "creator_id": "eval_bad_null"},
+            {"text": 12345, "creator_id": "eval_bad_number"},
+            {"text": ["not", "a", "string"], "creator_id": "eval_bad_list"},
+            {"text": "word " * 50000, "creator_id": "eval_bad_huge"},
         ],
     },
 
