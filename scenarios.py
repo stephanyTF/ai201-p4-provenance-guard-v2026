@@ -48,9 +48,8 @@ SCENARIOS = [
         # A clearly-AI and clearly-human text score difference should be 
         # at least .5
         "texts": [
-            "“Few feline habits are as endearing, or as puzzling, as kneading. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior looks like a quirk, it has deep roots in a cat's biology and early life.  Kneading likely combines several motives: nostalgia, instinct, territory, and comfort.",
+            "Few feline habits are as endearing, or as puzzling, as kneading. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior looks like a quirk, it has deep roots in a cat's biology and early life.  Kneading likely combines several motives: nostalgia, instinct, territory, and comfort.",
             "Nahh it's all good. I don't want to pressure u to join if u can’t. Your health and school are an absolute priority!! Ahh noo. No sleep? It’s must been a long week for u. Hope ur able to take some power naps when u can so u can get thru your assignments. But ik self care and staying on top of school work and everything else is hard.",
-            "Have you seen on your social media feed or heard a few cat owners exclaim, “Aww my cats are making biscuits!”. Making biscuits or kneading are one of the few feline habits that can be seen as not just endearing but even puzzling. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior might seem quirky, it's deeply rooted in a cat's biology and early life.  Kneading likely stems from several motives: nostalgia, instinct, territory, and comfort.",
         ],
     },
     {
@@ -59,22 +58,12 @@ SCENARIOS = [
         # Inputs spread across your score range, so you can check all three
         # labels are actually reachable.
         "texts": [
-            "REPLACE ME with something you're confident is AI-generated.",
-            "REPLACE ME with something you're confident is human-written.",
-            "REPLACE ME with something genuinely borderline.",
+            "Few feline habits are as endearing, or as puzzling, as kneading. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior looks like a quirk, it has deep roots in a cat's biology and early life.  Kneading likely combines several motives: nostalgia, instinct, territory, and comfort.",
+            "Nahh it's all good. I don't want to pressure u to join if u can’t. Your health and school are an absolute priority!! Ahh noo. No sleep? It’s must been a long week for u. Hope ur able to take some power naps when u can so u can get thru your assignments. But ik self care and staying on top of school work and everything else is hard.",
+            "Have you seen on your social media feed or heard a few cat owners exclaim, “Aww my cats are making biscuits!”. Making biscuits or kneading are one of the few feline habits that can be seen as not just endearing but even puzzling. A cat settles onto a soft blanket and begins pressing its paws rhythmically into the fabric, one after the other, often purring with half-closed eyes. Although the behavior might seem quirky, it's deeply rooted in a cat's biology and early life.  Kneading likely stems from several motives: nostalgia, instinct, territory, and comfort."
         ],
     },
-    {
-        "name": "label coverage",
-        "criterion": 4,
-        # Inputs spread across your score range, so you can check all three
-        # labels are actually reachable.
-        "texts": [
-            "REPLACE ME with something you're confident is AI-generated.",
-            "REPLACE ME with something you're confident is human-written.",
-            "REPLACE ME with something genuinely borderline.",
-        ],
-    },
+      
     {
         "name": "label coverage",
         "criterion": 5,
@@ -110,6 +99,10 @@ SCENARIOS = [
     # it needs a submission first and then an appeal against the content_id
     # that came back. You'll need to test that one by hand, or extend this file
     # and run_eval.py to do it. Saying which you did is part of the write-up.
+
+
+    ## Criterion 4 (appeals) is NOT included here. 
+    #  Run python run_appeals.py separately; it submits, appeals, then checks the audit log.
 ]
 
 
