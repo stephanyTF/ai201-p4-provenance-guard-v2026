@@ -51,7 +51,7 @@ Two things worth knowing before you pick numbers:
 
 ---
 
-## 2. A clearly-AI and clearly-human text score should score difference should be at least .5
+## 2. A clearly-AI and clearly-human text score difference should be at least .5
 
 <!-- Your criterion. -->
 
