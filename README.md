@@ -359,7 +359,7 @@ whose work got caught by it:
 | 1. my own writing | 2/9 | MET  | MET  | MET  | PASS |
 | 2. Distinguishable | .5 | MISS  | MISS  | MISS  | FAIL  |
 | 3. label coverage |  2/3  | 2/3  | 2/3  | 2/3  | PASS |
-| 4. Appeal Test |  |   |   |   |  |
+| 4. Appeal Test | 7/9  |  9/9  |   9/9 | 9/9   |  9/9 | PASS
 | 5. Handling Invalid Text | 5/5 | 0/5  | 0/5  | 0/5  | FAIL |
 
 **Real output from one trial**, pasted as text, naming the file and function
