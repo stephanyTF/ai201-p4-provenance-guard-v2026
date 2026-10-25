@@ -365,6 +365,8 @@ whose work got caught by it:
 **Real output from one trial**, pasted as text, naming the file and function
 that produced it:
 
+**Criteria 1**
+
 run_eval.py::main()
 
 ```json
