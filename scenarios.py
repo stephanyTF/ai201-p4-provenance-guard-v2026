@@ -65,14 +65,14 @@ SCENARIOS = [
     },
       
     {
-        "name": "label coverage",
+        "name": "Handling Invalid Text",
         "criterion": 5,
-        # Inputs spread across your score range, so you can check all three
-        # labels are actually reachable.
+        #  Missing and/or empty text should always avoid scoring and request the user again to submit a non empty text while an enormous text should also be avoided to score and instead notify the user to shorten their content
         "texts": [
-            "REPLACE ME with something you're confident is AI-generated.",
-            "REPLACE ME with something you're confident is human-written.",
-            "REPLACE ME with something genuinely borderline.",
+            "",
+            ".",
+            "borderline.",
+    
         ],
     },
 
