@@ -225,10 +225,11 @@ def submit():
 
     # Step 3: one real signal. Everything else is a placeholder until M4/M5.
     model_score = detector.model_signal(text)
-    guess = scoring.score_to_label(model_score)[0]  #  M4/M5
-    confidence = model_score  #  M4
-    label = scoring.score_to_label(model_score)[1]  #  M5
     style_score = stylometry.style_signal(text)  #  M4
+    confidence = scoring.combine_signals(model_score, style_score)  #  M4
+    guess = scoring.score_to_label(confidence)[0]  #  M4/M5
+    label = scoring.score_to_label(confidence)[1] #  M5
+
 
     # Step 4: log every submission. /appeal looks decisions up by content_id.
     content_id = str(uuid.uuid4())
