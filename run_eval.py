@@ -127,6 +127,8 @@ def main():
                         "model_score": payload.get("model_score"),
                         "style_score": payload.get("style_score"),
                         "label": payload.get("label"),
+                        "error": payload.get("error"),
+                        "message": payload.get("message"),
                         "sent": preview,
                     })
                 except Exception as exc:  # noqa: BLE001
@@ -136,6 +138,10 @@ def main():
             trials.append(results)
             guesses = [r.get("guess") or "—" for r in results]
             print(f"  trial {trial}: {', '.join(guesses)}")
+            for r in results:
+                if r.get("error"):
+                    print(f"      [{r.get('status')}] {r['error']}: "
+                          f"{r.get('message') or ''}  <- {r['sent'][:40]}")
 
         rows.append({"scenario": scenario, "trials": trials})
 
