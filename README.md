@@ -360,7 +360,7 @@ whose work got caught by it:
 | 2. Distinguishable | .5 | MISS  | MISS  | MISS  | FAIL  |
 | 3. label coverage |  2/3  | 2/3  | 2/3  | 2/3  | PASS |
 | 4. Appeal Test | 7/9  |  9/9  |   9/9 | 9/9   |  9/9 | PASS
-| 5. Handling Invalid Text | 5/5 | 0/5  | 0/5  | 0/5  | FAIL |
+| 5. Handling Invalid Text | 5/5 | 4/5  | 4/5  | 4/5  | FAIL |
 
 **Real output from one trial**, pasted as text, naming the file and function
 that produced it:
@@ -399,9 +399,13 @@ run_eval.py::main()
 
      Look for a pattern. Five failures on one signal is one problem, not five. -->
 
-
+#Criteria 5 Handling Invalid Text
+None of the tests passed because there's no handling invalid text feature implemented.
 
 ---
+
+
+
 
 ## The Improvement
 
