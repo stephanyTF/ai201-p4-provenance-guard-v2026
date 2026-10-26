@@ -410,8 +410,10 @@ None of the tests passed because there's no handling invalid text feature implem
 ## The Improvement
 
 **What I changed:**
+Implemented a guard to reject repetitive spam: at least 2/3 of the words must be unique.
 
 **Which diagnosis pointed at it:**
+- Missing critieria 5
 
 ### Attack Run — After
 
@@ -423,7 +425,7 @@ None of the tests passed because there's no handling invalid text feature implem
 
 <!-- Widening the unsure band usually fixes one problem and creates another.
      Reporting that trade honestly is worth full credit. -->
-
+It helped as all 3 trial runs for Criteria 5 passed including the one post where it was one word repeated about 5000 times. 
 
 
 ---
@@ -433,10 +435,18 @@ None of the tests passed because there's no handling invalid text feature implem
 <!-- For each attack still getting through and each criterion still missed:
      what you'd do, and why you stopped. -->
 
+May need to tweak the unique measure from Critiera 5 because for 1 human writing, it didn't pass. A few other notes are:
+     - No empty string: If empty: send a short message asking the user for a non empty text that’s at least 100 words or up
+     - Min reqs: 100 words or up 
+     - If doesn’t meet this, send a short message with the total count of the text out of the total words expected (at least 100) and ask the user to increase their word count
+     - Criteria 2: Distinguishable
+        Either adjust the expectation of .5 since your threshold of ai is too low w/ human, or adjust how ai is predicted
+     - Ensure that one user isn’t purposefully creating too many creator IDs in attempt to avert single creator posting limit. 
+
 
 
 **The trade I'd make if this ran for real:**
-
+I'd ensure that more human writing passes through even at the cost of a few AI slipping by. The reasons is we don't want to discourage usage of human users if they think the model can't accept human writing. 
 <!-- Two sentences. Fewer wrong accusations means more AI text getting through.
      Say which way you'd go and WHO PAYS FOR IT. -->
 
