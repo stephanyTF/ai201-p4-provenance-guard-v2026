@@ -204,7 +204,7 @@ def submit():
     payload = request.get_json(silent=True) or {}
 
     import detector
-
+    
     # Step 2: pull the fields out, rejecting malformed input instead of crashing.
     text = payload.get("text")
     creator_id = payload.get("creator_id")
@@ -214,6 +214,14 @@ def submit():
     if not isinstance(creator_id, str) or not creator_id.strip(): #check if creator_id is a non-empty string
         return jsonify({"error": "invalid_creator_id",
                         "message": "`creator_id` must be a non-empty string."}), 400
+
+    # Implement handling invalid inputs:
+    # Reject repetitive spam: at least 2/3 of the words must be unique.
+    words = text.lower().split()
+    if len(set(words)) / len(words) < 2 / 3:
+        return jsonify({"error": "repetitive_text",
+                        "message": "Your text repeats the same words or phrases a lot. "
+                                   "Please check it wasn't repeated by accident and resubmit."}), 400
 
     # Step 3: one real signal. Everything else is a placeholder until M4/M5.
     model_score = detector.model_signal(text)
