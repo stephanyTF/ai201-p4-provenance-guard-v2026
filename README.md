@@ -1,29 +1,57 @@
 # Provenance Guard
 
-> ### 👋 Start here
->
-> **New to this repo? Read [RUNNING.md](RUNNING.md) first.**
->
-> Once `python test.py` passes, in one terminal:
->
-> ```bash
-> python app.py
-> ```
->
-> and in another:
->
-> ```bash
-> curl -X POST http://127.0.0.1:5000/ping \
->   -H "Content-Type: application/json" \
->   -d '{"message": "hello"}'
-> ```
->
-> That's a web service. Something sent it text and it sent something back.
-> Everything this unit is filling in the middle.
->
-> **The rest of this file is your submission.** Fill it in as you go.
 
+## Unit 9: Provenance Guard Extension: Abuse Sentry
+
+
+### What This Extends
 ---
+The Abuse Sentry keeps watch over the users submitting posts with the Provenance Guard. 
+
+ 
+
+
+
+### The Shape  B (Hardening against failure)
+---
+My extension is “Abuse Sentry  where I’ll be improving the system to be full-proof against users misusage. The 4 different layers of protection are below:
+
+1. Per-client Limit: Each user can post at most 7 per minute [Already implemented in Unit 8]
+
+2. Identity Limit: Every client can only have at most 2 distinct creator_ids can be assigned. 
+
+2. Global Limit 20/min: The entire service never accepts more than 20 posts per min (not reflective of a realistic scenario, just for testing purposes)
+
+3. Max 2 creator_ids / client: Even if a user is rotating multiple creator_ids, apply the same 7 post per minute restriction in total
+
+
+### Running It
+---
+
+
+### Instrumentation
+---
+
+
+### What It Costs
+---
+
+
+### Run Log and Verdicts
+---
+
+
+### The Improvement
+---
+
+
+### What's Still Broken
+---
+
+
+### How I Used AI
+---
+
 
 <!-- ─────────────────────────────────────────────────────────────────────────
      Unit 7 asks for the first five sections. Unit 8 adds the five below.
