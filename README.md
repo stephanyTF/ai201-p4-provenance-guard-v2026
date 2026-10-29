@@ -436,11 +436,11 @@ It helped as all 3 trial runs for Criteria 5 passed including the one post where
      what you'd do, and why you stopped. -->
 
 May need to tweak the unique measure from Critiera 5 because for 1 human writing, it didn't pass. A few other notes are:
-     - No empty string: If empty: send a short message asking the user for a non empty text that’s at least 100 words or up
-     - Min reqs: 100 words or up 
-     - If doesn’t meet this, send a short message with the total count of the text out of the total words expected (at least 100) and ask the user to increase their word count
+     -  No empty string: If empty: send a short message asking the user for a non empty text that’s at least 100 words or up
+     -  Min reqs: 100 words or up 
+     -   If doesn’t meet this, send a short message with the total count of the text out of the total words expected (at least 100) and ask the user to increase their word count
      - Criteria 2: Distinguishable
-        Either adjust the expectation of .5 since your threshold of ai is too low w/ human, or adjust how ai is predicted
+        Either adjust the expectation of .5 since threshold of ai is too low w/ human, or adjust how ai is predicted
      - Ensure that one user isn’t purposefully creating too many creator IDs in attempt to avert single creator posting limit. 
 
 
