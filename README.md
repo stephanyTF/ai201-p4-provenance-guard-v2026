@@ -48,6 +48,14 @@ My extension is “Abuse Sentry  where I’ll be improving the system to be full
 ### What's Still Broken
 ---
 
+### Out of Scope
+---
+1. Re-Defining text submission genre: (Currently multi-genere text and want to narrow to Literary analysis essays): 
+Before the system was tested w/ persuasive essays but may alter the scope to make the tools more refine and fair by focusing on one genre
+Shoot for submitting a paragraph that’s 500 to 1,500 words (from gemini)
+2. Adding another endpoint, /compare to compare two submitted posts (view differences in scoring and content)
+3. Adding a UI system
+
 
 ### How I Used AI
 ---
