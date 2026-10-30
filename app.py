@@ -154,7 +154,7 @@ def creator_id_cap_exceeded(client, creator_id):
         for cid, last in list(seen.items()):
             if now - last > config.CREATOR_ID_WINDOW_SECONDS:
                 del seen[cid]
-        if creator_id not in seen and len(seen) >= config.MAX_CREATOR_IDS_PER_CLIENT:
+        if creator_id not in seen and len(seen) >= config.MAX_CREATOR_IDS_PER_CLIENT: # Abuse Sentry Defense #4
             return True
         seen[creator_id] = now
         return False
@@ -197,8 +197,8 @@ def health():
 
 @app.post("/submit")
 @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
-@_guard_limit(f"{config.CLIENT_RATE_LIMIT_PER_MINUTE}/minute", lambda: request.remote_addr)
-@_guard_limit(f"{config.GLOBAL_RATE_LIMIT_PER_MINUTE}/minute", lambda: "global")
+@_guard_limit(f"{config.CLIENT_RATE_LIMIT_PER_MINUTE}/minute", lambda: request.remote_addr) # Abuse Sentry Defense #2: Client limit
+@_guard_limit(f"{config.GLOBAL_RATE_LIMIT_PER_MINUTE}/minute", lambda: "global") # Abuse Sentry Defense #3 -  Global Limit
 def submit():
     """
     Take a piece of text, decide about it, log the decision, answer.
@@ -266,7 +266,7 @@ def submit():
             creator_id=creator_id,
             reason="creator_id_cap",
             client=request.remote_addr,
-            limit=f"{config.MAX_CREATOR_IDS_PER_CLIENT} creator_ids per client",
+            limit=f"{config.MAX_CREATOR_IDS_PER_CLIENT} creator_ids per client", # Abuse Sentry Defense #4
         )
         return jsonify({"error": "too_many_creator_ids",
                         "message": "This client has used too many creator_ids. "
