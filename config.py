@@ -98,12 +98,12 @@ RATE_LIMITING_ENABLED = True #os.getenv("AI201_RATE_LIMITS", "1") == "1"
 RATE_LIMIT_PER_MINUTE = 7 #10 lowered rate limit to avoid spam
 RATE_LIMIT_PER_DAY = 200
 
-# Abuse guard — creator_id is client-chosen, so per-creator limits alone are
+# *Claude assisted: Abuse guard — creator_id is client-chosen, so per-creator limits alone are
 # bypassed by rotating ids. These layers key on the caller's address instead.
 # Turn the guard off (AI201_ABUSE_GUARD=0) for run_attacks.py's bulk sets,
 # which send many creator_ids from one address on purpose.
 ABUSE_GUARD_ENABLED = os.getenv("AI201_ABUSE_GUARD", "1") == "1"
-CLIENT_RATE_LIMIT_PER_MINUTE = 7     # all creator_ids from one address combined
+CLIENT_RATE_LIMIT_PER_MINUTE = 12     # [human (me:) edit: 7-->12 to ensure legit users sharing a network and working at the same time are able to post),  all creator_ids from one address combined
 GLOBAL_RATE_LIMIT_PER_MINUTE = 20    # every creator, every address
 MAX_CREATOR_IDS_PER_CLIENT = 2       # distinct creator_ids one address may use...
 CREATOR_ID_WINDOW_SECONDS = 3600     # ...within this window

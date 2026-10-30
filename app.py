@@ -260,7 +260,7 @@ def submit():
         return jsonify({"error": "invalid_creator_id",
                         "message": "`creator_id` must be a non-empty string."}), 400
 
-    # Abuse guard: one address can't hold more than a few creator_ids.
+    # Abuse Sentry Defense #2 - Identity Limit: one address can't hold more than a few creator_ids.
     if config.ABUSE_GUARD_ENABLED and creator_id_cap_exceeded(request.remote_addr, creator_id):
         audit.log_rejection(
             creator_id=creator_id,
