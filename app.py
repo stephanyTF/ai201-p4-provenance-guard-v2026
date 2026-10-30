@@ -24,6 +24,8 @@ Routes:
     GET  /health      is the service up, and is the model loaded
 """
 
+import threading
+import time
 import uuid
 
 from flask import Flask, jsonify, request
@@ -62,6 +64,18 @@ class _LimiterOff:
 
     def limit(self, *args, **kwargs):
         return lambda view: view
+
+
+def _guard_limit(rate, key_func):
+    """
+    One layer of the abuse guard: a `rate` limit counted per `key_func`.
+
+    Returns the route untouched when the guard is off, so it can sit in the
+    decorator stack either way.
+    """
+    if not config.ABUSE_GUARD_ENABLED:
+        return lambda view: view
+    return limiter.limit(rate, key_func=key_func)
 
 
 limiter = _LimiterOff()
@@ -117,6 +131,35 @@ if config.RATE_LIMITING_ENABLED:
         }), 429
 
 
+# ── Abuse guard — creator_id cap ──────────────────────────────────────────────
+# creator_id is whatever the caller types, so rotating ids gets a fresh
+# per-creator bucket every time. The limits on /submit keyed by address close
+# that; this caps how many ids one address can even hold. In-memory, like the
+# limiter's storage: a restart forgets it.
+
+_creator_ids_by_client = {}   # address -> {creator_id: last_seen_monotonic}
+_creator_ids_lock = threading.Lock()
+
+
+def creator_id_cap_exceeded(client, creator_id):
+    """
+    True when `client` would exceed MAX_CREATOR_IDS_PER_CLIENT with `creator_id`.
+
+    Ids the client already holds keep working. Ids unused for
+    CREATOR_ID_WINDOW_SECONDS age out. A refused id is not recorded.
+    """
+    now = time.monotonic()
+    with _creator_ids_lock:
+        seen = _creator_ids_by_client.setdefault(client, {})
+        for cid, last in list(seen.items()):
+            if now - last > config.CREATOR_ID_WINDOW_SECONDS:
+                del seen[cid]
+        if creator_id not in seen and len(seen) >= config.MAX_CREATOR_IDS_PER_CLIENT:
+            return True
+        seen[creator_id] = now
+        return False
+
+
 # ── The worked example. Already works. Don't edit. ────────────────────────────
 
 @app.post("/ping")
@@ -154,6 +197,8 @@ def health():
 
 @app.post("/submit")
 @limiter.limit(f"{config.RATE_LIMIT_PER_MINUTE}/minute;{config.RATE_LIMIT_PER_DAY}/day")
+@_guard_limit(f"{config.CLIENT_RATE_LIMIT_PER_MINUTE}/minute", lambda: request.remote_addr)
+@_guard_limit(f"{config.GLOBAL_RATE_LIMIT_PER_MINUTE}/minute", lambda: "global")
 def submit():
     """
     Take a piece of text, decide about it, log the decision, answer.
@@ -214,6 +259,18 @@ def submit():
     if not isinstance(creator_id, str) or not creator_id.strip(): #check if creator_id is a non-empty string
         return jsonify({"error": "invalid_creator_id",
                         "message": "`creator_id` must be a non-empty string."}), 400
+
+    # Abuse guard: one address can't hold more than a few creator_ids.
+    if config.ABUSE_GUARD_ENABLED and creator_id_cap_exceeded(request.remote_addr, creator_id):
+        audit.log_rejection(
+            creator_id=creator_id,
+            reason="creator_id_cap",
+            client=request.remote_addr,
+            limit=f"{config.MAX_CREATOR_IDS_PER_CLIENT} creator_ids per client",
+        )
+        return jsonify({"error": "too_many_creator_ids",
+                        "message": "This client has used too many creator_ids. "
+                                   "Keep using one of your existing ones."}), 403
 
     # Implement handling invalid inputs:
     # Reject repetitive spam: at least 2/3 of the words must be unique.

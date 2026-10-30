@@ -94,8 +94,19 @@ AI_THRESHOLD = .4 # originally 0.65
 
 RATE_LIMITING_ENABLED = True #os.getenv("AI201_RATE_LIMITS", "1") == "1" 
 
+# Abuse Sentry Defense #1 - Unit 8
 RATE_LIMIT_PER_MINUTE = 7 #10 lowered rate limit to avoid spam
-RATE_LIMIT_PER_DAY = 200 
+RATE_LIMIT_PER_DAY = 200
+
+# Abuse guard — creator_id is client-chosen, so per-creator limits alone are
+# bypassed by rotating ids. These layers key on the caller's address instead.
+# Turn the guard off (AI201_ABUSE_GUARD=0) for run_attacks.py's bulk sets,
+# which send many creator_ids from one address on purpose.
+ABUSE_GUARD_ENABLED = os.getenv("AI201_ABUSE_GUARD", "1") == "1"
+CLIENT_RATE_LIMIT_PER_MINUTE = 7     # all creator_ids from one address combined
+GLOBAL_RATE_LIMIT_PER_MINUTE = 20    # every creator, every address
+MAX_CREATOR_IDS_PER_CLIENT = 2       # distinct creator_ids one address may use...
+CREATOR_ID_WINDOW_SECONDS = 3600     # ...within this window
 
 # Flask-Limiter warns loudly without this. In-memory is right for one laptop
 # and wrong for anything real — a restart forgets every count, and two copies
