@@ -27,7 +27,9 @@ My extension is “Abuse Sentry  where I’ll be improving the system to be full
 
 ### Running It
 ---
+*To test the Abuse Defense guard rail-
 
+```python guard_tests.py```
 
 ### Instrumentation
 ---
@@ -39,6 +41,13 @@ My extension is “Abuse Sentry  where I’ll be improving the system to be full
 
 ### Run Log and Verdicts
 ---
+| Criterion | Scenario | Expected | Actual | Result |
+|---|---|---|---|---|
+| No collateral damage | 1 client, 1 creator_id, 5 posts | `[200, 200, 200, 200, 200]` | `[200, 200, 200, 200, 200]` | MET |
+| 1. Max 2 creator_ids per client | 1 client rotates 5 creator_ids, 1 post each | `[200, 200, 403, 403, 403]` | `[200, 200, 403, 403, 403]` | MET |
+| 1. Max 2 creator_ids per client | same client reuses an id it already holds | `[200]` | `[200]` | MET |
+| 2. Per-client limit (7/min across ids) | 1 client, 2 creator_ids alternating, 10 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200]` | MISSED |
+| 3. Global limit (20/min total) | 5 clients x 5 posts = 25 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | MET |
 
 
 ### The Improvement
@@ -59,6 +68,11 @@ Shoot for submitting a paragraph that’s 500 to 1,500 words (from gemini)
 
 ### How I Used AI
 ---
+
+Claude was helpful in brainstorming and refining what the Abuse Defense guardrail should defend against. One of them was Abuse Sentry Defense #2 - Identity Limit and it helped implemented the code. 
+
+Something I changed: The client_rate_limit in app.py::config, which originally was set the same as creator_id which stood out to me bc i thought they were doing the same job but after discussing it more w/ claude which acknowledged the possible redundancy let to a greater insight that it’s unfair for both client and creator to be both capped at 7 considering the scenario where two legit users sharing a network could be posting at the acceptable rate of 7 but get restricted (&*2 = 14 > 7 the max client post cap)
+Thus I changed the client rate limit from 7 to 12, making it more flexible. Not 14 bc we want to ensure we’re still restricting illegit users faking diff creator_ids. 
 
 
 <!-- ─────────────────────────────────────────────────────────────────────────
