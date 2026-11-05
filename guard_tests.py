@@ -9,11 +9,17 @@ address per scenario via REMOTE_ADDR, and stubs the two signals so the run takes
 seconds. Each scenario resets the limiter and the creator_id tracker, then
 checks the status codes against the criterion it covers.
 
-Writes results/guard_tests_<date>.md, which is what the README pastes.
+Writes results/guard_tests_<date>.md, which is what the README pastes, and one
+JSON line per scenario to logs/guard_tests.jsonl (timestamp, run_id, input,
+output, duration_ms). Test traffic goes to logs/guard_tests_audit.jsonl so it
+never lands in the real logs/audit.jsonl.
 """
 
 import datetime as dt
+import json
 import sys
+import time
+import uuid
 
 import app as app_module
 import config
@@ -23,6 +29,14 @@ import stylometry
 # The guard is about who sends, not what the signals say.
 detector.model_signal = lambda text: 0.5
 stylometry.style_signal = lambda text: 0.5
+
+# Keep test traffic out of the real audit log. audit.py reads config.AUDIT_LOG
+# on every write, so repointing it here is enough.
+config.AUDIT_LOG = config.LOG_DIR / "guard_tests_audit.jsonl"
+
+# One structured record per scenario, appended across runs and told apart by run_id.
+TEST_LOG = config.LOG_DIR / "guard_tests.jsonl"
+RUN_ID = uuid.uuid4().hex[:8]
 
 client = app_module.app.test_client()
 _counter = 0
@@ -56,51 +70,75 @@ def codes(pairs):
 def run():
     results = []
 
-    def check(criterion, scenario, expected, actual):
-        results.append((criterion, scenario, expected, actual, expected == actual))
+    def check(criterion, scenario, expected, pairs):
+        """Send `pairs` as /submit calls, time them, log the scenario, record the result."""
+        start = time.perf_counter()
+        actual = codes(pairs)
+        duration_ms = round((time.perf_counter() - start) * 1000, 1)
+        ok = expected == actual
+        results.append((criterion, scenario, expected, actual, ok))
+        log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms)
 
     # 0. Baseline — a normal client is untouched.
     reset()
     check("No collateral damage",
           "1 client, 1 creator_id, 5 posts",
           [200] * 5,
-          codes([("10.0.0.1", "alice")] * 5))
+          [("10.0.0.1", "alice")] * 5)
 
     # 1. Identity cap — rotating creator_ids.
     reset()
-    got = codes([("10.0.0.2", f"rot{i}") for i in range(5)])
     check("1. Max 2 creator_ids per client",
           "1 client rotates 5 creator_ids, 1 post each",
           [200, 200, 403, 403, 403],
-          got)
+          [("10.0.0.2", f"rot{i}") for i in range(5)])
     check("1. Max 2 creator_ids per client",
           "same client reuses an id it already holds",
           [200],
-          codes([("10.0.0.2", "rot0")]))
+          [("10.0.0.2", "rot0")])
 
     # 2. Per-client limit — two ids, one address, 10 posts (5 each, under 7/creator).
     reset()
-    got = codes([("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(10)])
     check("2. Per-client limit (7/min across ids)",
           "1 client, 2 creator_ids alternating, 10 posts",
           [200] * config.CLIENT_RATE_LIMIT_PER_MINUTE + [429] * 3,
-          got)
+          [("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(10)])
 
     # 3. Global limit — five clients, five posts each = 25 in a minute.
     reset()
-    got = codes([(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
     check("3. Global limit (20/min total)",
           "5 clients x 5 posts = 25 posts",
           [200] * config.GLOBAL_RATE_LIMIT_PER_MINUTE + [429] * 5,
-          got)
+          [(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
 
     return results
+
+
+def log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms):
+    """Append one JSON line to logs/guard_tests.jsonl."""
+    record = {
+        "timestamp": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
+        "run_id": RUN_ID,
+        "criterion": criterion,
+        "scenario": scenario,
+        "input": [{"client_ip": ip, "creator_id": cid} for ip, cid in pairs],
+        "expected": expected,
+        "output": actual,
+        "passed": ok,
+        "duration_ms": duration_ms,
+    }
+    config.LOG_DIR.mkdir(parents=True, exist_ok=True)
+    with TEST_LOG.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
 def main():
     if not config.RATE_LIMITING_ENABLED or not config.ABUSE_GUARD_ENABLED:
         print("Rate limiting and the abuse guard must both be ON for this test.")
         return 2
+
+    # Start each run with an empty test audit log so it only holds this run.
+    config.AUDIT_LOG.unlink(missing_ok=True)
 
     results = run()
 
