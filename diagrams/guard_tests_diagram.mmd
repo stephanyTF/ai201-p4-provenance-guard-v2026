@@ -1,0 +1,26 @@
+---
+references:
+  - "File: /guard_tests.py"
+generationTime: 2026-11-05T06:42:08.620Z
+---
+flowchart TD
+    A["Start: run main()"] --> B["Initialize test setup: import modules, stub signals, configure test audit log and client"]
+    B --> C{"Rate limiting and abuse guard enabled?"}
+    C -->|No| D["Print requirement message and return 2"]
+    C -->|Yes| E["Clear test audit log"]
+    E --> F["Run baseline, identity-cap, per-client-limit, and global-limit checks"]
+    F --> G["Reset limiter and creator ID tracker as required"]
+    G --> H["check(): start timer and call codes(pairs)"]
+    H --> I{"More client and creator ID pairs?"}
+    I -->|Yes| J["post(): generate unique text and submit request with REMOTE_ADDR"]
+    J --> K["Capture response status code"]
+    K --> I
+    I -->|No| L["Compare actual codes with expected codes and append result"]
+    L --> M["Write scenario record to guard_tests.jsonl"]
+    M --> N{"More checks or scenarios?"}
+    N -->|Yes| G
+    N -->|No| O["Build Markdown report from results"]
+    O --> P["Print report and write dated results file"]
+    P --> Q{"Did every check pass?"}
+    Q -->|Yes| R["Return 0"]
+    Q -->|No| S["Return 1"]
