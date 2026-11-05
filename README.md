@@ -14,7 +14,7 @@ The Abuse Sentry keeps watch over the users submitting posts with the Provenance
 
 ### The Shape  B (Hardening against failure)
 ---
-My extension is “Abuse Sentry  where I’ll be improving the system to be full-proof against users misusage. The 4 different layers of protection are below:
+My extension is “Abuse Sentry  where I'll be improving the system to better defend itself against users misusage. The 4 different layers of protection are below:
 
 1. Per-client Limit: Each user can post at most 7 per minute [Already implemented in Unit 8]
 
@@ -27,7 +27,7 @@ My extension is “Abuse Sentry  where I’ll be improving the system to be full
 
 ### Running It
 ---
-*To test the Abuse Defense guard rail-
+*To test the Abuse Defense guard rail run-
 
 ```python guard_tests.py```
 
