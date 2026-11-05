@@ -1,6 +1,6 @@
 # Running Provenance Guard
 
-Everything about how the starter works.
+Everything about how the AI Enhanced Defense version of Provenance Guard works.
 
 This is a **web service**. It runs on your machine and you talk to it with
 `curl` from another terminal. If you've not built a backend before, that's
@@ -8,16 +8,15 @@ assumed — the starter ships one that already answers.
 
 ---
 
-## Before your first class
+## Set Up
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python test.py
+python guard_tests.py #added
 ```
 
-**You're ready when `python test.py` passes.**
 
 You'll see `[WARN] Detector model — not downloaded yet`:
 

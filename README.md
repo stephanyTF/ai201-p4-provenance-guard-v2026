@@ -11,7 +11,6 @@ The Abuse Sentry keeps watch over the users submitting posts with the Provenance
  
 
 
-
 ### The Shape  B (Hardening against failure)
 ---
 My extension is “Abuse Sentry  where I'll be improving the system to better defend itself against users misusage. The 4 different layers of protection are below:
@@ -34,6 +33,21 @@ My extension is “Abuse Sentry  where I'll be improving the system to better de
 ### Instrumentation
 ---
 
+**Checks for Max Creator Ids per Client**
+```
+{"timestamp": "2026-11-05T07:24:09+00:00", "run_id": "17a6a1a6", "criterion": "1. Max 2 creator_ids per client", "scenario": "same client reuses an id it already holds", "input": [{"client_ip": "10.0.0.2", "creator_id": "rot0"}], "expected": [200], "output": [200], "passed": true, "duration_ms": 1.3}
+```
+
+**Per-client limit (7/min across ids) test on  1 client using 2 creator_ids**
+
+```
+{"timestamp": "2026-11-05T07:24:09+00:00", "run_id": "17a6a1a6", "criterion": "2. Per-client limit (7/min across ids)", "scenario": "1 client, 2 creator_ids alternating, 10 posts", "input": [{"client_ip": "10.0.0.3", "creator_id": "pair_a"}, {"client_ip": "10.0.0.3", "creator_id": "pair_b"}, {"client_ip": "10.0.0.3", "creator_id": "pair_a"}, {"client_ip": "10.0.0.3", "creator_id": "pair_b"}, {"client_ip": "10.0.0.3", "creator_id": "pair_a"}, {"client_ip": "10.0.0.3", "creator_id": "pair_b"}, {"client_ip": "10.0.0.3", "creator_id": "pair_a"}, {"client_ip": "10.0.0.3", "creator_id": "pair_b"}, {"client_ip": "10.0.0.3", "creator_id": "pair_a"}, {"client_ip": "10.0.0.3", "creator_id": "pair_b"}], "expected": [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429], "output": [200, 200, 200, 200, 200, 200, 200, 200, 200, 200], "passed": false, "duration_ms": 14.4}
+```
+
+**Global limit (20/min total) testing w/ 5 Clients**
+```
+{"timestamp": "2026-11-05T07:24:09+00:00", "run_id": "17a6a1a6", "criterion": "3. Global limit (20/min total)", "scenario": "5 clients x 5 posts = 25 posts", "input": [{"client_ip": "10.0.1.0", "creator_id": "g0"}, {"client_ip": "10.0.1.0", "creator_id": "g0"}, {"client_ip": "10.0.1.0", "creator_id": "g0"}, {"client_ip": "10.0.1.0", "creator_id": "g0"}, {"client_ip": "10.0.1.0", "creator_id": "g0"}, {"client_ip": "10.0.1.1", "creator_id": "g1"}, {"client_ip": "10.0.1.1", "creator_id": "g1"}, {"client_ip": "10.0.1.1", "creator_id": "g1"}, {"client_ip": "10.0.1.1", "creator_id": "g1"}, {"client_ip": "10.0.1.1", "creator_id": "g1"}, {"client_ip": "10.0.1.2", "creator_id": "g2"}, {"client_ip": "10.0.1.2", "creator_id": "g2"}, {"client_ip": "10.0.1.2", "creator_id": "g2"}, {"client_ip": "10.0.1.2", "creator_id": "g2"}, {"client_ip": "10.0.1.2", "creator_id": "g2"}, {"client_ip": "10.0.1.3", "creator_id": "g3"}, {"client_ip": "10.0.1.3", "creator_id": "g3"}, {"client_ip": "10.0.1.3", "creator_id": "g3"}, {"client_ip": "10.0.1.3", "creator_id": "g3"}, {"client_ip": "10.0.1.3", "creator_id": "g3"}, {"client_ip": "10.0.1.4", "creator_id": "g4"}, {"client_ip": "10.0.1.4", "creator_id": "g4"}, {"client_ip": "10.0.1.4", "creator_id": "g4"}, {"client_ip": "10.0.1.4", "creator_id": "g4"}, {"client_ip": "10.0.1.4", "creator_id": "g4"}], "expected": [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429], "output": [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429], "passed": true, "duration_ms": 33.1}
+```
 
 ### What It Costs
 ---
