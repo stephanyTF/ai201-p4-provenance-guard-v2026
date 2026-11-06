@@ -115,7 +115,25 @@ def run():
           [200] * config.GLOBAL_RATE_LIMIT_PER_MINUTE + [429] * 5,
           [(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
 
+    # 4. Cost — a shared classroom. 10 different legit students on ONE address,
+    # one post each. Nobody is abusing anything, so every non-200 is an unfair block.
+    reset()
+    classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
+    check("Cost: shared network (legit users)",
+          "1 classroom IP, 10 students, 1 post each",
+          [200] * config.MAX_CREATOR_IDS_PER_CLIENT
+          + [403] * (10 - config.MAX_CREATOR_IDS_PER_CLIENT),
+          classroom)
+    blocked = sum(1 for c in results[-1][3] if c != 200)
+    COSTS.append({"scenario": "1 classroom IP, 10 legit students, 1 post each",
+                  "legit_requests": len(classroom),
+                  "blocked": blocked,
+                  "blocked_pct": round(100 * blocked / len(classroom))})
+
     return results
+
+
+COSTS = []
 
 
 def log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms):
@@ -155,6 +173,10 @@ def main():
     for criterion, scenario, expected, actual, ok in results:
         lines.append(f"| {criterion} | {scenario} | `{expected}` | `{actual}` | "
                      f"{'PASS' if ok else 'FAIL'} |")
+    for c in COSTS:
+        lines.append("")
+        lines.append(f"**Cost:** {c['blocked']} / {c['legit_requests']} legitimate requests "
+                     f"blocked unfairly ({c['blocked_pct']}%) — {c['scenario']}")
     report = "\n".join(lines) + "\n"
 
     print(report)
