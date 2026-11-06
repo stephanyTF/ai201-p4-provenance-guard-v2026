@@ -53,6 +53,24 @@ My extension is “Abuse Sentry  where I'll be improving the system to better de
 ---
 
 
+- **Cost**:  blocking legitimate users who share a network.** 
+
+The guard identifies a "client" by IP address, but an IP address can be shared m multiple users sharing the same network. For instance, a classroom, dorm, or household may share one public IP, so the guard cannot tell them apart.
+
+| Shared-network scenario | Legit requests | Blocked unfairly | Why |
+|---|---|---|---|
+| 1 classroom IP, 10 students, 1 post each | 10 | 8 (80%) | Identity cap allows only 2 creator_ids per IP, so students 3-10 get 403 |
+| 1 IP, 2 creators posting at the per-creator max (7/min each) | 14 | 2 (14%) | Client limit is 12/min, so 14 combined requests exceed it |
+
+Every block is a false positive despite the case we have legitamite users
+I raised the client limit from 7 to 12 to ease the second case, but the identity cap in the first case blocks users before the rate limit even applies.
+
+**The trade:** the guard stops one address from rotating creator_ids, but it
+penalizes honest users on shared networks and does nothing against an attacker
+with several IPs. 
+
+
+
 ### Run Log and Verdicts
 ---
 | Criterion | Scenario | Expected | Actual | Result |
