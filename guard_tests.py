@@ -115,7 +115,7 @@ def run():
           [200] * config.GLOBAL_RATE_LIMIT_PER_MINUTE + [429] * 5,
           [(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
 
-    # 4. Cost — a shared classroom. 10 different legit students on ONE address,
+    # 4.  Cost — a shared classroom. 10 different legit students on ONE address,
     # one post each. Nobody is abusing anything, so every non-200 is an unfair block.
     reset()
     classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
