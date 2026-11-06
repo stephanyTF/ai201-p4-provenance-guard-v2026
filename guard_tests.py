@@ -29,7 +29,8 @@ import config
 import detector
 import stylometry
 
-# The guard is about who sends, not what the signals say.
+# Signals are set at .5 to simulate moderate risk but the focus in on the rate limiting behavior 
+# to protect the system against bad actors.
 detector.model_signal = lambda text: 0.5
 stylometry.style_signal = lambda text: 0.5
 
@@ -100,12 +101,12 @@ def run():
           [200],
           [("10.0.0.2", "rot0")])
 
-    # 2. Per-client limit — two ids, one address, 10 posts (5 each, under 7/creator).
+    # 2. Per-client limit — two ids, one address, 15 posts (5 each, under 7 per creator).
     reset()
     check("2. Per-client limit (7/min across ids)",
-          "1 client, 2 creator_ids alternating, 10 posts",
+          "1 client, 2 creator_ids alternating, 15 posts",
           [200] * config.CLIENT_RATE_LIMIT_PER_MINUTE + [429] * 3,
-          [("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(10)])
+          [("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(15)])
 
     # 3. Global limit — five clients, five posts each = 25 in a minute.
     reset()
