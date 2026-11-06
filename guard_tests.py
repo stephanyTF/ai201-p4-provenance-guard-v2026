@@ -9,10 +9,13 @@ address per scenario via REMOTE_ADDR, and stubs the two signals so the run takes
 seconds. Each scenario resets the limiter and the creator_id tracker, then
 checks the status codes against the criterion it covers.
 
-Writes results/guard_tests_<date>.md, which is what the README pastes, and one
-JSON line per scenario to logs/guard_tests.jsonl (timestamp, run_id, input,
-output, duration_ms). Test traffic goes to logs/guard_tests_audit.jsonl so it
-never lands in the real logs/audit.jsonl.
+Does 3 things:
+
+    1. Writes results/guard_tests_<date>.md (in README)
+    
+    2. Adds JSON line per scenario to logs/guard_tests.jsonl (timestamp, run_id, input, output, duration_ms). 
+
+    3. Test traffic goes to logs/guard_tests_audit.jsonl so it never lands in the real logs/audit.jsonl.
 """
 
 import datetime as dt

@@ -1,6 +1,6 @@
-# Running Provenance Guard
+# Running Provenance Guard (w/ Abuse Defense Guard)
 
-Everything about how the AI Enhanced Defense version of Provenance Guard works.
+Everything about how the Provenance Guard works but **Hardened Against Failure (specifically against bad actors misusage)**.
 
 This is a **web service**. It runs on your machine and you talk to it with
 `curl` from another terminal. If you've not built a backend before, that's
@@ -14,7 +14,7 @@ assumed — the starter ships one that already answers.
 python3 -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-python guard_tests.py #added
+python guard_tests.py #New [UNIT 9]
 ```
 
 
@@ -96,6 +96,7 @@ position.**
 
 | Command | What it does |
 |---|---|
+| `python guard_tests.py` | **New [UNIT 9]- Runs tests on client fair usage of number of submissions** |
 | `python test.py` | Checks your environment |
 | `python app.py` | Runs the service |
 | `python detector.py` | Downloads the model and scores a sample — **run before class** |
@@ -237,6 +238,7 @@ your write-up; that's the deliverable.
 
 | File | What it does |
 |---|---|
+| `guard_tests.py` | **New [UNIT 9] - Runs guard tests and creates guard test log **| 
 | `config.py` | Every setting: thresholds, weights, rate limits, the model |
 | `app.py` | The service. `/ping` and `/log` work; `/submit` and `/appeal` are yours |
 | `detector.py` | Signal one — the local model. Given to you |
