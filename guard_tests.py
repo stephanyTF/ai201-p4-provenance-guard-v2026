@@ -121,8 +121,8 @@ def run():
     classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
     check("Cost: shared network (legit users)",
           "1 classroom IP, 10 students, 1 post each",
-          [200] * 10,   # desired behavior: legit users are never blocked. Expect this to FAIL.
-          classroom)
+          [200] * 10,    # desired behavior: legit users are never blocked. Expect this to FAIL.
+          classroom) 
     blocked = sum(1 for c in results[-1][3] if c != 200)
     COSTS.append({"scenario": "1 classroom IP, 10 legit students, 1 post each",
                   "legit_requests": len(classroom),
