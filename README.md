@@ -73,6 +73,11 @@ with several IPs.
 
 ### Run Log and Verdicts
 ---
+
+# Abuse guard tests (before) — 2026-11-08
+
+MAX_CREATOR_IDS_PER_CLIENT = 2
+
 | Criterion | Scenario | Expected | Actual | Result |
 |---|---|---|---|---|
 | No collateral damage | 1 client, 1 creator_id, 5 posts | `[200, 200, 200, 200, 200]` | `[200, 200, 200, 200, 200]` | MET |
@@ -85,10 +90,32 @@ with several IPs.
 
 ### The Improvement
 ---
+# Abuse guard tests (after) — 2026-11-08
 
+**CHANGED:** MAX_CREATOR_IDS_PER_CLIENT = from 2 to  30
+
+| Criterion | Scenario | Expected | Actual | Result |
+|---|---|---|---|---|
+| No collateral damage | 1 client, 1 creator_id, 5 posts | `[200, 200, 200, 200, 200]` | `[200, 200, 200, 200, 200]` | MET |
+| 1. Max 30 creator_ids per client | 1 client rotates 33 creator_ids, 1 post each | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429, 429]` | MET |
+| 2. Max 30 creator_ids per client | same client reuses an id it already holds | `[200]` | `[429]` | MISSED |
+| 3. Per-client limit (7/min across ids) | 1 client, 2 creator_ids alternating, 15 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | MET |
+| 4. Global limit (20/min total) | 5 clients x 5 posts = 25 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200,200, 200, 429, 429, 429, 429, 429]` | MET |
+| 5. Cost: shared network (legit users) | 1 classroom IP, 10 students, 1 post each | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200]` | MET |
+
+**Cost:** 0 / 10 legitimate requests blocked unfairly (0%) — 1 classroom IP, 10 legit students, 1 post each
+
+**Fix Analysis**:
+- Improved by decreasing cost of false positives in event of a 30 student classroom using a shared IP address (one of the system's main user groups for a creative arg. essay submission) from 80% risk to 0% 
 
 ### What's Still Broken
 ---
+
+- Improvement however causes the 2nd critiera (2. Max 30 creator_ids per client | same client reuses an id it already holds ) to miss. 
+- Change is not robust for classrooms or legit group users above 30 
+- Bad actors may still find a way to abuse the 30 max creator ids since content of submission is not analyzed (may contain corrupt or jailbreaking prompts)
+
+
 
 ### Out of Scope
 ---
@@ -104,8 +131,10 @@ Shoot for submitting a paragraph that’s 500 to 1,500 words (from gemini)
 
 Claude was helpful in brainstorming and refining what the Abuse Defense guardrail should defend against. One of them was Abuse Sentry Defense #2 - Identity Limit and it helped implemented the code. 
 
-Something I changed: The client_rate_limit in app.py::config, which originally was set the same as creator_id which stood out to me bc i thought they were doing the same job but after discussing it more w/ claude which acknowledged the possible redundancy let to a greater insight that it’s unfair for both client and creator to be both capped at 7 considering the scenario where two legit users sharing a network could be posting at the acceptable rate of 7 but get restricted (&*2 = 14 > 7 the max client post cap)
+Something I changed: The client_rate_limit in app.py::config, which originally was set the same as creator_id which stood out to me bc i thought they were doing the same job but after discussing it more w/ claude which acknowledged the possible redundancy let to a greater insight that it’s unfair for both client and creator to be both capped at 7 considering the scenario where two legit users sharing a network could be posting at the acceptable rate of 7 but get restricted (7*2 = 14 > 7 the max client post cap)
 Thus I changed the client rate limit from 7 to 12, making it more flexible. Not 14 bc we want to ensure we’re still restricting illegit users faking diff creator_ids. 
+
+Additionally, Claude helped narrowed down the possible solutions to decrease false positive rates with a low cieling for Max Creator IDs by increasing the allowance so  I changed from 2 to 30 creator ids allowed for 1 IP address. The 12 submissions per minute helps ensure that there's less flooding potential that could happen from spammers. 
 
 
 <!-- ─────────────────────────────────────────────────────────────────────────
