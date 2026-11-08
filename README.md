@@ -76,10 +76,11 @@ with several IPs.
 | Criterion | Scenario | Expected | Actual | Result |
 |---|---|---|---|---|
 | No collateral damage | 1 client, 1 creator_id, 5 posts | `[200, 200, 200, 200, 200]` | `[200, 200, 200, 200, 200]` | MET |
-| 1. Max 2 creator_ids per client | same client reuses an id it already holds | `[200]` | `[200]` | MET |
-| 2. Per-client limit (7/min across ids) | 1 client, 2 creator_ids alternating, 15 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | MET |
-| 3. Global limit (20/min total) | 5 clients x 5 posts = 25 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | PASS |
-| 4. Cost: shared network (legit users) | 1 classroom IP, 10 students, 1 post each | `[200, 200, 403, 403, 403, 403, 403, 403, 403, 403]` | `[200, 200, 403, 403, 403, 403, 403, 403, 403, 403]` | MISSED |
+| 1. Max 2 creator_ids per client | 1 client rotates 5 creator_ids, 1 post each | `[200, 200, 403, 403, 403]` | `[200, 200, 403, 403, 403]` | MET |
+| 2. Max 2 creator_ids per client | same client reuses an id it already holds | `[200]` | `[200]` | MET |
+| 3. Per-client limit (7/min across ids) | 1 client, 2 creator_ids alternating, 15 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429]` | MET |
+| 4. Global limit (20/min total) | 5 clients x 5 posts = 25 posts | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 429, 429, 429, 429, 429]` | MET |
+| 5. Cost: shared network (legit users) | 1 classroom IP, 10 students, 1 post each | `[200, 200, 200, 200, 200, 200, 200, 200, 200, 200]` | `[200, 200, 403, 403, 403, 403, 403, 403, 403, 403]` | MISSED |
 
 
 ### The Improvement
