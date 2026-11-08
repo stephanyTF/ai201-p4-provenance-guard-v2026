@@ -42,6 +42,9 @@ config.AUDIT_LOG = config.LOG_DIR / "guard_tests_audit.jsonl"
 TEST_LOG = config.LOG_DIR / "guard_tests.jsonl"
 RUN_ID = uuid.uuid4().hex[:8]
 
+# python guard_tests.py --label before   (then change the config, then --label after)
+LABEL = sys.argv[sys.argv.index("--label") + 1] if "--label" in sys.argv[:-1] else None
+
 client = app_module.app.test_client()
 _counter = 0
 
@@ -92,11 +95,19 @@ def run():
 
     # 1. Identity cap — rotating creator_ids.
     reset()
-    check("1. Max 2 creator_ids per client",
-          "1 client rotates 5 creator_ids, 1 post each",
-          [200, 200, 403, 403, 403],
-          [("10.0.0.2", f"rot{i}") for i in range(5)])
-    check("1. Max 2 creator_ids per client",
+    # Follows the config, so the same test runs before and after you change the cap.
+    # A request over the client limit is turned away (429) before the cap check (403)
+    # ever runs, so the cap can only be seen below CLIENT_RATE_LIMIT_PER_MINUTE.
+    cap = config.MAX_CREATOR_IDS_PER_CLIENT
+    rotations = cap + 3
+    expected_rot = [429 if i >= config.CLIENT_RATE_LIMIT_PER_MINUTE
+                    else 403 if i >= cap else 200
+                    for i in range(rotations)]
+    check(f"1. Max {cap} creator_ids per client",
+          f"1 client rotates {rotations} creator_ids, 1 post each",
+          expected_rot,
+          [("10.0.0.2", f"rot{i}") for i in range(rotations)])
+    check(f"1. Max {cap} creator_ids per client",
           "same client reuses an id it already holds",
           [200],
           [("10.0.0.2", "rot0")])
@@ -119,7 +130,7 @@ def run():
     # one post each. Nobody is abusing anything, so every non-200 is an unfair block.
     reset()
     classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
-    check("Cost: shared network (legit users)",
+    check("4. Cost: shared network (legit users)",
           "1 classroom IP, 10 students, 1 post each",
           [200] * 10,     # desired behavior: legit users are never blocked. Expect this to FAIL.
           classroom) 
@@ -140,6 +151,8 @@ def log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms):
     record = {
         "timestamp": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "run_id": RUN_ID,
+        "label": LABEL,
+        "max_creator_ids_per_client": config.MAX_CREATOR_IDS_PER_CLIENT,
         "criterion": criterion,
         "scenario": scenario,
         "input": [{"client_ip": ip, "creator_id": cid} for ip, cid in pairs],
@@ -164,7 +177,9 @@ def main():
     results = run()
 
     lines = [
-        f"# Abuse guard tests — {dt.date.today()}",
+        f"# Abuse guard tests{f' ({LABEL})' if LABEL else ''} — {dt.date.today()}",
+        "",
+        f"MAX_CREATOR_IDS_PER_CLIENT = {config.MAX_CREATOR_IDS_PER_CLIENT}",
         "",
         "| Criterion | Scenario | Expected | Actual | Result |",
         "|---|---|---|---|---|",
@@ -180,7 +195,8 @@ def main():
 
     print(report)
     config.RESULTS_DIR.mkdir(parents=True, exist_ok=True)
-    out = config.RESULTS_DIR / f"guard_tests_{dt.date.today()}.md"
+    suffix = f"_{LABEL}" if LABEL else ""
+    out = config.RESULTS_DIR / f"guard_tests{suffix}_{dt.date.today()}.md"
     out.write_text(report, encoding="utf-8")
     print(f"Wrote {out}")
     return 0 if all(r[-1] for r in results) else 1
