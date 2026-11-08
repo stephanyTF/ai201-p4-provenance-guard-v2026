@@ -105,7 +105,7 @@ RATE_LIMIT_PER_DAY = 200
 ABUSE_GUARD_ENABLED = os.getenv("AI201_ABUSE_GUARD", "1") == "1"
 CLIENT_RATE_LIMIT_PER_MINUTE = 12     # [human (me:) edit: 7-->12 to ensure legit users sharing a network and working at the same time are able to post),  all creator_ids from one address combined
 GLOBAL_RATE_LIMIT_PER_MINUTE = 20    # every creator, every address
-MAX_CREATOR_IDS_PER_CLIENT = 2       # distinct creator_ids one address may use...
+MAX_CREATOR_IDS_PER_CLIENT = 30       # distinct creator_ids that one IP address may use... changed 2--> 30 for "class" of legit users sharing netowrk scenario
 CREATOR_ID_WINDOW_SECONDS = 3600     # ...within this window
 
 # Flask-Limiter warns loudly without this. In-memory is right for one laptop
