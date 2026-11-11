@@ -1,21 +1,16 @@
-# Acceptance criteria — Provenance Guard
+# Capstone Criteria (Unit 9-10)
 
-Five criteria that say what "working" means for this service, written in unit 7
-**before** you built it.
+1. Per-creator limit: 7 posts per minute per creator_id (Unit 8).
 
-**All five are yours.** None are given.
+2. Per-client limit: 7 client's posts per minute max across all its creator_ids combined based on IP address. 
 
-An acceptance criterion names a number or something plainly observable. *"The
-detector is accurate"* is an opinion — and perfect AI detection isn't possible
-anyway, so it's an opinion about something nobody can deliver. *"Of 10 pieces I
-wrote myself, at most 1 is labelled high-confidence AI"* is a criterion.
+3. Global limit: 20 posts per minute for the whole service.
 
-Under each, write a sentence or two on **why that target**. *"I allow at most 1
-false positive in 10 because on a writing site a wrong accusation costs more
-than a missed detection"* is a real answer.
+4. Identity cap: At most MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
 
-> Missing your own targets next unit costs you nothing. Setting a target so
-> easy you can't miss it does.
+
+# Acceptance criteria — Provenance Guard Unit 8
+
 
 ---
 
