@@ -86,52 +86,56 @@ def run():
         results.append((criterion, scenario, expected, actual, ok))
         log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms)
 
-    # 1. Baseline / Happy Path a normal client can submit posts
+    client_limit = config.CLIENT_RATE_LIMIT_PER_MINUTE
+    cap = config.MAX_CREATOR_IDS_PER_CLIENT
+
+    # Baseline: 1 good user, 1 creator_id, 5 posts, under the per-minute limits.
     reset()
-    check("1. Baseline: Normal Usage of a Good user",
+    check("Baseline: normal good user",
           "1 client, 1 creator_id, 5 posts",
           [200] * 5,
           [("10.0.0.1", "alice")] * 5)
 
-    # 2. Identity cap — rotating creator_ids.
+    # Defense #1 - Per-client limit: all creator_ids from one address share one bucket.
     reset()
-    # Follows the config, so the same test runs before and after the cap change.
-    # A request over the client limit is turned away (429) before the cap check (403)
-    #  runs, so the cap can only be seen below CLIENT_RATE_LIMIT_PER_MINUTE.
-    cap = config.MAX_CREATOR_IDS_PER_CLIENT
-    rotations = cap + 3
-    expected_rot = [429 if i >= config.CLIENT_RATE_LIMIT_PER_MINUTE
-                    else 403 if i >= cap else 200
-                    for i in range(rotations)]
-    check(f"2. Max {cap} creator_ids per client",
-          f"1 client rotates {rotations} creator_ids, 1 post each",
-          expected_rot,
-          [("10.0.0.2", f"rot{i}") for i in range(rotations)])
-    check(f"1. Max {cap} creator_ids per client",
-          "same client reuses an id it already holds",
-          [200],
-          [("10.0.0.2", "rot0")])
-
-    # 3. Per-client limit — two ids, one address, 15 posts (5 each, under 7 per creator).
-    reset()
-    check("3. Per-client limit (7/min across ids)",
+    check(f"Defense #1: Per-client limit ({client_limit}/min across ids)",
           "1 client, 2 creator_ids alternating, 15 posts",
-          [200] * config.CLIENT_RATE_LIMIT_PER_MINUTE + [429] * 3,
+          [200] * client_limit + [429] * (15 - client_limit),
           [("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(15)])
 
-    # 4. Global limit — five clients, five posts each = 25 in a minute.
+    # Defense #2 - Identity limit: a client may hold at most `cap` distinct creator_ids.
+    # Seed the tracker with `cap` ids so the cap is reachable whatever the rate
+    # limits are (a request over the client limit gets 429 before the cap check).
     reset()
-    check("4. Global limit (20/min total)",
+    now = time.monotonic()
+    app_module._creator_ids_by_client["10.0.0.2"] = {f"held{i}": now for i in range(cap)}
+    check(f"Defense #2: Identity limit (max {cap} creator_ids per client)",
+          f"client already holds {cap} ids; a new id is refused, a held id still works",
+          [403, 200],
+          [("10.0.0.2", "brand_new"), ("10.0.0.2", "held0")])
+
+    # Defense #3 - Global limit: five clients, five posts each = 25 in a minute.
+    reset()
+    check(f"Defense #3: Global limit ({config.GLOBAL_RATE_LIMIT_PER_MINUTE}/min total)",
           "5 clients x 5 posts = 25 posts",
           [200] * config.GLOBAL_RATE_LIMIT_PER_MINUTE + [429] * 5,
           [(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
 
-    # 5.  Even if a user is rotating multiple creator_ids, apply the same 7 post per minute restriction in total 
-    # (Cost: a shared classroom. 10 different legit students on ONE address,
-    # one post each may be unfairly blocked
+    # Defense #4 - Rotating creator_ids: a new id per post gets no fresh allowance.
+    # Same per-client total applies, and the id cap (403) applies if it is lower.
+    reset()
+    rotations = client_limit + 3
+    expected_rot = [429 if i >= client_limit else 403 if i >= cap else 200
+                    for i in range(rotations)]
+    check(f"Defense #4: Rotating ids, same per-client total (max {cap} ids, {client_limit}/min)",
+          f"1 client rotates {rotations} creator_ids, 1 post each",
+          expected_rot,
+          [("10.0.0.4", f"rot{i}") for i in range(rotations)])
+
+    # Cost of the defenses on legitimate users (shared classroom network).
     reset()
     classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
-    check("5. Cost: shared network (legit users)",
+    check("Cost: shared network (legit users)",
           "1 classroom IP, 10 students, 1 post each",
           [200] * 10,     # desired behavior: legit users are never blocked. Expect this to FAIL.
           classroom) 
