@@ -86,24 +86,24 @@ def run():
         results.append((criterion, scenario, expected, actual, ok))
         log_scenario(criterion, scenario, pairs, expected, actual, ok, duration_ms)
 
-    # 0. Baseline — a normal client is untouched.
+    # 1. Baseline / Happy Path a normal client can submit posts
     reset()
-    check("No collateral damage",
+    check("1. Baseline: Normal Usage of a Good user",
           "1 client, 1 creator_id, 5 posts",
           [200] * 5,
           [("10.0.0.1", "alice")] * 5)
 
-    # 1. Identity cap — rotating creator_ids.
+    # 2. Identity cap — rotating creator_ids.
     reset()
-    # Follows the config, so the same test runs before and after you change the cap.
+    # Follows the config, so the same test runs before and after the cap change.
     # A request over the client limit is turned away (429) before the cap check (403)
-    # ever runs, so the cap can only be seen below CLIENT_RATE_LIMIT_PER_MINUTE.
+    #  runs, so the cap can only be seen below CLIENT_RATE_LIMIT_PER_MINUTE.
     cap = config.MAX_CREATOR_IDS_PER_CLIENT
     rotations = cap + 3
     expected_rot = [429 if i >= config.CLIENT_RATE_LIMIT_PER_MINUTE
                     else 403 if i >= cap else 200
                     for i in range(rotations)]
-    check(f"1. Max {cap} creator_ids per client",
+    check(f"2. Max {cap} creator_ids per client",
           f"1 client rotates {rotations} creator_ids, 1 post each",
           expected_rot,
           [("10.0.0.2", f"rot{i}") for i in range(rotations)])
@@ -112,25 +112,26 @@ def run():
           [200],
           [("10.0.0.2", "rot0")])
 
-    # 2. Per-client limit — two ids, one address, 15 posts (5 each, under 7 per creator).
+    # 3. Per-client limit — two ids, one address, 15 posts (5 each, under 7 per creator).
     reset()
-    check("2. Per-client limit (7/min across ids)",
+    check("3. Per-client limit (7/min across ids)",
           "1 client, 2 creator_ids alternating, 15 posts",
           [200] * config.CLIENT_RATE_LIMIT_PER_MINUTE + [429] * 3,
           [("10.0.0.3", "pair_a" if i % 2 == 0 else "pair_b") for i in range(15)])
 
-    # 3. Global limit — five clients, five posts each = 25 in a minute.
+    # 4. Global limit — five clients, five posts each = 25 in a minute.
     reset()
-    check("3. Global limit (20/min total)",
+    check("4. Global limit (20/min total)",
           "5 clients x 5 posts = 25 posts",
           [200] * config.GLOBAL_RATE_LIMIT_PER_MINUTE + [429] * 5,
           [(f"10.0.1.{c}", f"g{c}") for c in range(5) for _ in range(5)])
 
-    # 4.  Cost — a shared classroom. 10 different legit students on ONE address,
-    # one post each. Nobody is abusing anything, so every non-200 is an unfair block.
+    # 5.  Even if a user is rotating multiple creator_ids, apply the same 7 post per minute restriction in total 
+    # (Cost: a shared classroom. 10 different legit students on ONE address,
+    # one post each may be unfairly blocked
     reset()
     classroom = [("10.0.2.1", f"student{i}") for i in range(10)]
-    check("4. Cost: shared network (legit users)",
+    check("5. Cost: shared network (legit users)",
           "1 classroom IP, 10 students, 1 post each",
           [200] * 10,     # desired behavior: legit users are never blocked. Expect this to FAIL.
           classroom) 
