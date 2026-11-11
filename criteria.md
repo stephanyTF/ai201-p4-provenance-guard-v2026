@@ -1,12 +1,15 @@
 # Capstone Criteria (Unit 9-10)
 
-1. Per-creator limit: 7 posts per minute per creator_id (Unit 8).
+1. Baseline: 1 good user w/ 1 client id is able to submit 5 posts under the 7 per post per minute rate 
 
-2. Per-client limit: 7 client's posts per minute max across all its creator_ids combined based on IP address. 
 
-3. Global limit: 20 posts per minute for the whole service.
+2. Per-creator limit: 7 posts per minute per creator_id (Unit 8).
 
-4. Identity cap: At most MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
+3. Per-client limit: 7 client's posts per minute max across all its creator_ids combined based on IP address. 
+
+4. Global limit: 20 posts per minute for the whole service.
+
+5. Identity cap: At most MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
 
 
 # Acceptance criteria — Provenance Guard Unit 8

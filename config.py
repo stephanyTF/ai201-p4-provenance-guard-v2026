@@ -22,8 +22,8 @@ HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "5000"))
 
 # Flask's debug mode gives anyone who can reach the service an interactive
-# Python prompt inside your process. Fine on loopback, a gift to strangers
-# anywhere else — so it turns itself off the moment HOST isn't loopback.
+# Python prompt inside process.
+# Turns itself off the moment when HOST isn't loopback.
 DEBUG = os.getenv("AI201_DEBUG", "1") == "1" and HOST in ("127.0.0.1", "localhost")
 
 
@@ -98,14 +98,19 @@ RATE_LIMITING_ENABLED = True #os.getenv("AI201_RATE_LIMITS", "1") == "1"
 RATE_LIMIT_PER_MINUTE = 7 #10 lowered rate limit to avoid spam
 RATE_LIMIT_PER_DAY = 200
 
-# *Claude assisted: Abuse guard — creator_id is client-chosen, so per-creator limits alone are
+# Abuse guard — creator_id is client-chosen, so per-creator limits alone are
 # bypassed by rotating ids. These layers key on the caller's address instead.
 # Turn the guard off (AI201_ABUSE_GUARD=0) for run_attacks.py's bulk sets,
 # which send many creator_ids from one address on purpose.
 ABUSE_GUARD_ENABLED = os.getenv("AI201_ABUSE_GUARD", "1") == "1"
+
 CLIENT_RATE_LIMIT_PER_MINUTE = 12     # [human (me:) edit: 7-->12 to ensure legit users sharing a network and working at the same time are able to post),  all creator_ids from one address combined
+
 GLOBAL_RATE_LIMIT_PER_MINUTE = 20    # every creator, every address
+
+#Criteria 5
 MAX_CREATOR_IDS_PER_CLIENT = 30       # distinct creator_ids that one IP address may use... changed 2--> 30 for "class" of legit users sharing netowrk scenario
+
 CREATOR_ID_WINDOW_SECONDS = 3600     # ...within this window
 
 # Flask-Limiter warns loudly without this. In-memory is right for one laptop
