@@ -89,6 +89,15 @@ MAX_CREATOR_IDS_PER_CLIENT = 2
 
 
 ### The Improvement
+
+
+**What I changed:**
+Loosened a guard to prevent risk of false positives when rejecting misuses of multiple creator IDs per client. 
+
+**Which diagnosis pointed at it:**
+- Missing critieria 4
+
+
 ---
 # Abuse guard tests (after) — 2026-11-08
 
