@@ -15,13 +15,13 @@ The Abuse Sentry keeps watch over the users submitting posts with the Provenance
 ---
 My extension is “Abuse Sentry  where I'll be improving the system to better defend itself against users misusage. The 4 different layers of protection are below:
 
-1. Per-client Limit: Each user can post at most 7 per minute [Already implemented in Unit 8]
+1. Per-creator limit: 7 posts per minute per creator_id (Unit 8).
 
-2. Identity Limit: Every client can only have at most 2 distinct creator_ids can be assigned. 
+2. Per-client limit: 7 client's posts per minute max across all its creator_ids combined based on IP address. (For the case a user rotates IDs to avert from #1 per creator limit)
 
-2. Global Limit 20/min: The entire service never accepts more than 20 posts per min (not reflective of a realistic scenario, just for testing purposes)
+3. Global limit: 20 posts per minute for the whole service.
 
-3. Max 2 creator_ids / client: Even if a user is rotating multiple creator_ids, apply the same 7 post per minute restriction in total
+4. Identity cap: At most MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
 
 
 ### Running It
