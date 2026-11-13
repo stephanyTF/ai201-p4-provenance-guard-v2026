@@ -9,7 +9,7 @@
 
 4. Global limit: 20 posts per minute for the whole service.
 
-5. Identity cap: At most MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
+5. Identity cap: At most 2 MAX_CREATOR_IDS_PER_CLIENT distinct creator_ids per IP.
 
 
 # Acceptance criteria — Provenance Guard Unit 8
