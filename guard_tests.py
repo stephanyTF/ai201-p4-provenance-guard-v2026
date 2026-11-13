@@ -4,7 +4,7 @@ Abuse-guard tests — no server and no model needed.
 
     python guard_tests.py
 
-Drives the Flask app in-process with the test client, faking a different caller
+Functions using the Flask app in-process with the test client, faking a different caller
 address per scenario via REMOTE_ADDR, and stubs the two signals so the run takes
 seconds. Each scenario resets the limiter and the creator_id tracker, then
 checks the status codes against the criterion it covers.
@@ -15,7 +15,7 @@ Does 3 things:
     
     2. Adds JSON line per scenario to logs/guard_tests.jsonl (timestamp, run_id, input, output, duration_ms). 
 
-    3. Test traffic goes to logs/guard_tests_audit.jsonl so it never lands in the real logs/audit.jsonl.
+    3. Test traffic goes to logs/guard_tests_audit.jsonl so it's not in the real logs/audit.jsonl.
 """
 
 import datetime as dt
